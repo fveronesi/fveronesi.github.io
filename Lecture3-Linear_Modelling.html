@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Dr. Fabio Veronesi" />
+
+
+<title>Lecture 3 - Linear Modelling</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Comprehensive R Course on Inferential Statistics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Course Summary</a>
+</li>
+<li>
+  <a href="Lecture1_BasicR.html">Lecture 1</a>
+</li>
+<li>
+  <a href="Lecture2_Experimental_Designs.html">Lecture 2</a>
+</li>
+<li>
+  <a href="Lecture3-Linear_Modelling.html">Lecture 3</a>
+</li>
+<li>
+  <a href="Lecture4-GLM.html">Lecture 4</a>
+</li>
+<li>
+  <a href="Lecture5-Mixed_Effect_Models.html">Lecture 5</a>
+</li>
+<li>
+  <a href="Lecture6-Mixed_Effect_Models.html">Lecture 6</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Lecture 3 - Linear Modelling</h1>
+<h4 class="author"><em>Dr. Fabio Veronesi</em></h4>
+<h4 class="date"><em>April 2018</em></h4>
+
+</div>
+
+
+<div id="summary" class="section level2">
+<h2><strong>Summary</strong></h2>
+<ul>
+<li>Introduction</li>
+<li>Assumptions of parametric tests</li>
+<li>ANOVA</li>
+<li>Statistical vs. Biological Effect</li>
+<li>Other Forms of Linear Modelling</li>
+<li>Checking Assumptions</li>
+</ul>
+<hr />
+</div>
+<div id="introduction" class="section level2">
+<h2><strong>Introduction</strong></h2>
+<p>In the previous lecture we started talking about inferential statistics and t-test, which we can use to compare two samples. However, in the majority of cases we work with more complex designs where we need to compare different treatments, so we need more advanced tests, which will be describe here.</p>
+<p>We will start though by taking a step back and talking about the assumptions of inferential statistics.</p>
+<hr />
+</div>
+<div id="assumptions-of-parametric-tests" class="section level2">
+<h2><strong>Assumptions of parametric tests</strong></h2>
+<p>Generally speaking, inferential statistics works by comparing mean values and confidence intervals. As we discussed in the previous lecture, this implies computing the standard error of the mean. However, if you remember from the first day, the standard error of the mean can only be used when we have a normal distribution. In cases where the distribution is not normal we need to use quantiles. This implies that with distributions that are different from the normal, we cannot use standard statistical tests.</p>
+<p>This is probably the most important assumption of the test we will discuss today. However, it is not the only one For example, if we want to apply ANOVA we need to check the following assumptions:</p>
+<ul>
+<li>Independence</li>
+<li>Normality</li>
+<li>Equality of variances between groups</li>
+<li>Balanced design</li>
+</ul>
+<p>Some of these assumptions are quite strict, while other can be relaxed, particularly if we have at least 10 samples per group.</p>
+<p>ANOVA, or analysis of variance, is a test that compares mean values from several groups based on the following equation:</p>
+<div id="y_j-eta-tau_i-epsilon" class="section level3">
+<h3><span class="math inline">\(y_j = \eta + \tau_i + \epsilon\)</span></h3>
+<p>where <span class="math inline">\(y_j\)</span> is the effect of treatment <span class="math inline">\(\tau_i\)</span> on group <span class="math inline">\(j\)</span>, <span class="math inline">\(\eta\)</span> is the grand mean, i.e. the global mean of all groups, and <span class="math inline">\(\epsilon\)</span> is the error term.</p>
+<p>Most of the assumptions are related to the error term <span class="math inline">\(\epsilon\)</span>, which is assumed to be independent, normally distributed and have constant variance. The assumption of independence is very strict, if our data are correlated this assumption will be violated and the results of ANOVA could be biased. However, if the experiment is properly designed and fully randomized this will not be an issue (except for within-subject designs like latin square). Normality and constant variance are assumptions that can be relaxed if sample size is sufficiently large. We will look at how to check both of them below.</p>
+<hr />
+</div>
+</div>
+<div id="anova" class="section level2">
+<h2><strong>ANOVA</strong></h2>
+<p>This lecture will show the R code necessary to perform an ANOVA, but it will not dig too much into the theory behind the analysis. If you want to know more about it please look at the following document I wrote: <a href="https://liveharperac-my.sharepoint.com/:b:/g/personal/00754140_harper-adams_ac_uk/EUQhOucE2NNJt46FJGzVHdIBxAAs0Cj-96vAFjLU0tN2NQ?e=qIsTVz">ANOVA</a></p>
+<p>In this lecture we will load agricultural datasets from a package named <code>agridat</code>. Please install and load it:</p>
+<pre class="r"><code>install.packages(&quot;agridat&quot;)</code></pre>
+<pre class="r"><code>library(agridat)</code></pre>
+<p>Other packages we need, and which needs to be installed, are:</p>
+<pre class="r"><code>library(car)
+library(pwr)
+library(moments)
+library(Rfit) 
+library(MASS)
+library(tidyverse)
+library(lsmeans)
+library(sjstats)</code></pre>
+<p>From <code>agridat</code> we can now load the dataset <code>lasrosas.corn</code>, which has more that 3400 observations of corn yield (measured in quintals/ha) in a field in Argentina, plus several explanatory variables both factorial (or categorical) and continuous.</p>
+<pre class="r"><code>data(lasrosas.corn)
+
+str(lasrosas.corn)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    3443 obs. of  9 variables:
+##  $ year : int  1999 1999 1999 1999 1999 1999 1999 1999 1999 1999 ...
+##  $ lat  : num  -33.1 -33.1 -33.1 -33.1 -33.1 ...
+##  $ long : num  -63.8 -63.8 -63.8 -63.8 -63.8 ...
+##  $ yield: num  72.1 73.8 77.2 76.3 75.5 ...
+##  $ nitro: num  132 132 132 132 132 ...
+##  $ topo : Factor w/ 4 levels &quot;E&quot;,&quot;HT&quot;,&quot;LO&quot;,..: 4 4 4 4 4 4 4 4 4 4 ...
+##  $ bv   : num  163 170 168 177 171 ...
+##  $ rep  : Factor w/ 3 levels &quot;R1&quot;,&quot;R2&quot;,&quot;R3&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ nf   : Factor w/ 6 levels &quot;N0&quot;,&quot;N1&quot;,&quot;N2&quot;,..: 6 6 6 6 6 6 6 6 6 6 ...</code></pre>
+<p>We will start by performing a one-way ANOVA, where the treatment structure has only one level. For this experiment we will try to explain yield (which is our dependent variable, <span class="math inline">\(y\)</span>), with nitrogen levels (independent variable, or predictor). In R analysis of variance can be performed with the function <code>aov</code>:</p>
+<pre class="r"><code>One.Way = aov(yield ~ nf, data=lasrosas.corn) </code></pre>
+<p>To obtain the ANOVA table we can use the function <code>summary</code>:</p>
+<pre class="r"><code>summary(One.Way)</code></pre>
+<pre><code>##               Df  Sum Sq Mean Sq F value   Pr(&gt;F)    
+## nf             5   23987    4797    12.4 6.08e-12 ***
+## Residuals   3437 1330110     387                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>As for the t-test, in the summary above we are mostly interested in the <em>p-value</em>, which tells us the level of significance of our treatment. In this case the <em>p-value</em> is very low, which means some of the groups (i.e. plots treated with particular levels of nitrogen) are statistically different from other.</p>
+<p>We can be a bit more precise by performing multiple comparison, where we test each combination of treatments (i.e. each individual contrast):</p>
+<pre class="r"><code>TukeyHSD(One.Way, conf.level=0.95) </code></pre>
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = yield ~ nf, data = lasrosas.corn)
+## 
+## $nf
+##            diff        lwr       upr     p adj
+## N1-N0 3.6434635  0.3353282  6.951599 0.0210713
+## N2-N0 4.6774357  1.3606516  7.994220 0.0008383
+## N3-N0 5.3629638  2.0519632  8.673964 0.0000588
+## N4-N0 7.5901274  4.2747959 10.905459 0.0000000
+## N5-N0 7.8588595  4.5478589 11.169860 0.0000000
+## N2-N1 1.0339723 -2.2770686  4.345013 0.9489077
+## N3-N1 1.7195004 -1.5857469  5.024748 0.6750283
+## N4-N1 3.9466640  0.6370782  7.256250 0.0089057
+## N5-N1 4.2153960  0.9101487  7.520643 0.0038074
+## N3-N2 0.6855281 -2.6283756  3.999432 0.9917341
+## N4-N2 2.9126917 -0.4055391  6.230923 0.1234409
+## N5-N2 3.1814238 -0.1324799  6.495327 0.0683500
+## N4-N3 2.2271636 -1.0852863  5.539614 0.3916824
+## N5-N3 2.4958957 -0.8122196  5.804011 0.2613027
+## N5-N4 0.2687320 -3.0437179  3.581182 0.9999099</code></pre>
+<p>These results provide a <em>p-value</em> for each pair of treatments. This allows us to determine which of these are different from each other. For example, <code>N0</code> is statistically different from all other nitrogen levels. However, <code>N1</code> is different from <code>N4</code> and <code>N5</code>, but not from <code>N2</code> and <code>N3</code>.</p>
+<p>These results can also be presented in a graphical form:</p>
+<pre class="r"><code>TukeyHSD(One.Way, conf.level=0.95) %&gt;%
+  plot()</code></pre>
+<p><img src="Lecture3-Linear_Modelling_files/figure-html/unnamed-chunk-8-1.png" width="960" /></p>
+<p>Confidence intervals that intersect zero are not significant, while the higher the average difference in mean values the large the effect size.</p>
+<p>We can extract the mean values of each treatment using the following line:</p>
+<pre class="r"><code>model.tables(One.Way, type=&quot;means&quot;)</code></pre>
+<pre><code>## Tables of means
+## Grand mean
+##          
+## 69.82831 
+## 
+##  nf 
+##         N0     N1     N2     N3     N4     N5
+##      64.97  68.62  69.65  70.34  72.56  72.83
+## rep 573.00 577.00 571.00 575.00 572.00 575.00</code></pre>
+<p>This function provides us with the grand mean, mean values of each treatment level and the number of replicates for each level. As you can see not all the levels were replicated the same number of times; this is therefore an unbalanced design. In this case this is not much of a problem because the number of samples is very high. However, for smaller experiments this can create issues and in some cases we cannot avoid unbalanced designs.</p>
+<p>If this happens we cannot rely on the standard ANOVA table, but we have to compute what is called a type III test, as follows:</p>
+<pre class="r"><code>Anova(One.Way, type=&quot;III&quot;)</code></pre>
+<pre><code>## Anova Table (Type III tests)
+## 
+## Response: yield
+##              Sum Sq   Df  F value    Pr(&gt;F)    
+## (Intercept) 2418907    1 6250.447 &lt; 2.2e-16 ***
+## nf            23987    5   12.396 6.075e-12 ***
+## Residuals   1330110 3437                       
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>To know more about this please look at: <a href="http://www.utstat.utoronto.ca/reid/sta442f/2009/typeSS.pdf">Types of Sums of Squares</a></p>
+<p>We can investigate the effects of each treatment using the following line:</p>
+<pre class="r"><code>model.tables(One.Way, type=&quot;effects&quot;)</code></pre>
+<pre><code>## Tables of effects
+## 
+##  nf 
+##          N0      N1      N2       N3      N4      N5
+##      -4.855  -1.212  -0.178   0.5075   2.735   3.003
+## rep 573.000 577.000 571.000 575.0000 572.000 575.000</code></pre>
+<p>These values are all referred to the grand mean, meaning for example that <code>N0</code> has a value that is -4.855 below the grand mean. We can verify that looking at the table of means above.</p>
+<hr />
+<div id="statistical-vs.biological-effect" class="section level3">
+<h3><strong>Statistical vs. Biological Effect</strong></h3>
+<p>Sometimes there is some confusion on the meaning of <em>p-values</em>. Generally speaking, <em>p-values</em> are reported based on the probability they represent. As we mentioned in the previous lecture, significance is generally accepted at 5%, meaning that our results are considered significant only if the <em>p-value</em> is equal or below 0.05. However, <em>p-values</em> can also be smaller and in these cases we talk about highly significant differences if <em>p-value</em> is equal or below 0.01; very highly significant differences if the <em>p-value</em> is equal or below 0.001.</p>
+<p>These values express the probabilities of incurring in a Type I error (false positive), and indirectly also the probabilities of incurring in a type II error (it is very difficult to have low power in cases where the <em>p-value</em> is very highly significant). However, a very low <em>p-value</em> does not necessarily mean that the groups we are testing have large differences. In other words, the magnitude of differences between treatments is not measured by the <em>p-value</em>, which only tells that the probabilities of obtaining the same results by chance are very low.</p>
+<p>We can better understand this point once again with a little simulation similar to what we did in the previous lecture:</p>
+<pre class="r"><code>S1 = rnorm(n=3, mean=5, sd=2)
+S2 = rnorm(n=3, mean=6, sd=2)
+S3 = rnorm(n=3, mean=7, sd=2)</code></pre>
+<p>Here we are creating three samples that have differences equal to half a standard deviation. In terms of effect size their differences are equal to ES = 0.5. Therefore we are talking about relatively large differences between groups. However, the question is: can we detect these differences with a statistical tests?</p>
+<p>Before we can do that we need to create a <code>data.frame</code> to hold these data in a format that we can then use for ANOVA. We can do that with the following code:</p>
+<pre class="r"><code>SIM.LargeEffect = expand.grid(Rep=1:3, Treatment=c(&quot;T1&quot;, &quot;T2&quot;, &quot;T3&quot;))
+SIM.LargeEffect</code></pre>
+<pre><code>##   Rep Treatment
+## 1   1        T1
+## 2   2        T1
+## 3   3        T1
+## 4   1        T2
+## 5   2        T2
+## 6   3        T2
+## 7   1        T3
+## 8   2        T3
+## 9   3        T3</code></pre>
+<p>The function <code>expand.grid</code> is extremely useful for simulations (and for many other things). It basically allows us to supply several variables (in the form of <code>vector</code> of equal or unequal length), and it then creates a <code>data.frame</code> with all the combinations of elements in each vector. In this example, we simulated an experiment with three treatments (<code>T1</code>,<code>T2</code>, and <code>T3</code>) and three replicates. The function creates a <code>data.frame</code> of <span class="math inline">\(3 \times 3 = 9\)</span> rows with each combination. At this point we can simulate dependent variables (let’s call it <code>yield</code>) using the three samples we created above:</p>
+<pre class="r"><code>SIM.LargeEffect$Yield = 1:9</code></pre>
+<p>First of all, we create an additional column in the <code>data.frame</code>, called <code>yield</code>, which we fill with numbers from 1 to 9. These will act as place holders until we replace them with values from our three samples. To do so we can do some subsetting of the object <code>SIM.LargeEffect</code>:</p>
+<pre class="r"><code>SIM.LargeEffect[SIM.LargeEffect$Treatment==&quot;T1&quot;,]$Yield = S1
+SIM.LargeEffect[SIM.LargeEffect$Treatment==&quot;T2&quot;,]$Yield = S2
+SIM.LargeEffect[SIM.LargeEffect$Treatment==&quot;T3&quot;,]$Yield = S3</code></pre>
+<p>Here we are first subsetting the object by treatment, and at the same time replacing the elements in the column <code>yield</code> (for only the treatment we have subset) with one of the samples we created above.</p>
+<p>Let’s see how the object <code>SIM.LargeEffect</code> looks now:</p>
+<pre class="r"><code>SIM.LargeEffect</code></pre>
+<pre><code>##   Rep Treatment    Yield
+## 1   1        T1 6.339401
+## 2   2        T1 6.323843
+## 3   3        T1 2.125593
+## 4   1        T2 7.391073
+## 5   2        T2 6.575910
+## 6   3        T2 8.612435
+## 7   1        T3 5.090469
+## 8   2        T3 9.260361
+## 9   3        T3 5.928368</code></pre>
+<p>Now that we have a dataset where we know the effect size to be exactly 0.5, we can test it using ANOVA:</p>
+<pre class="r"><code>ANOVA.LargeEffect = aov(Yield ~ Treatment, data=SIM.LargeEffect)
+summary(ANOVA.LargeEffect)</code></pre>
+<pre><code>##             Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Treatment    2  10.68   5.340   1.356  0.327
+## Residuals    6  23.63   3.938</code></pre>
+<p>Clearly, since this is a simulation it may be that we obtain a significant <em>p-value</em> some times. However, chances are the large majority of times the <em>p-value</em> will not be significant, despite the relatively large differences between samples. This is because the samples size is small (<span class="math inline">\(n=3\)</span>).</p>
+<p>On the contrary, if the sample size is large enough we can obtain very small <em>p-values</em> even in cases where differences between groups are extremely small. Let’s look at the following simulation:</p>
+<pre class="r"><code>S4 = rnorm(n=7000, mean=5, sd=2)
+S5 = rnorm(n=7000, mean=5.1, sd=2)
+S6 = rnorm(n=7000, mean=5.2, sd=2)
+
+SIM.SmallEffect = expand.grid(Rep=1:21000, Treatment=c(&quot;T1&quot;, &quot;T2&quot;, &quot;T3&quot;))
+SIM.SmallEffect$Yield = 1:21000
+
+SIM.SmallEffect[SIM.SmallEffect$Treatment==&quot;T1&quot;,]$Yield = S4
+SIM.SmallEffect[SIM.SmallEffect$Treatment==&quot;T2&quot;,]$Yield = S5
+SIM.SmallEffect[SIM.SmallEffect$Treatment==&quot;T3&quot;,]$Yield = S6
+
+ANOVA.SmallEffect = aov(Yield ~ Treatment, data=SIM.SmallEffect)
+summary(ANOVA.SmallEffect)</code></pre>
+<pre><code>##                Df Sum Sq Mean Sq F value Pr(&gt;F)    
+## Treatment       2    496  247.96      63 &lt;2e-16 ***
+## Residuals   62997 247942    3.94                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Here we have three samples of size <span class="math inline">\(n = 7000\)</span> each, and with this amount of data finding very high significance for extremely small differences between groups is possible. This is clearly an unrealistic example; however, it clearly shows that <em>p-value</em> and differences between groups are not correlated. The conclusion is that it is always advisable to not just report the <em>p-value</em> but also the effect size (or at least a plot that clearly shows differences between groups).</p>
+<hr />
+</div>
+<div id="sample-size-for-one-way-anova" class="section level3">
+<h3><strong>Sample size for One-Way ANOVA</strong></h3>
+<p>As we mentioned in the previous lecture, power analysis can help us determine the minimum sample size required to achieve good power, given a particular effect size. Therefore, we can try to see what would be the optimal sample size for our simulations, starting from the first (<span class="math inline">\(ES = 0.5\)</span>). The function <code>pwr.anova.test</code> has a slightly different syntax compared to <code>pwr.t.test</code>. First of all we have to include the option <code>k</code> for the number of groups (in this case we have three treatments, so three groups). Then we have an option <code>f</code> for the effect size. This is another way of computing the effect size, which is simply <span class="math inline">\(f = \frac{ES}{2}\)</span>; the other options are the same:</p>
+<pre class="r"><code>pwr.anova.test(k=3, f=0.25, sig.level=0.05, power=0.8) </code></pre>
+<pre><code>## 
+##      Balanced one-way analysis of variance power calculation 
+## 
+##               k = 3
+##               n = 52.3966
+##               f = 0.25
+##       sig.level = 0.05
+##           power = 0.8
+## 
+## NOTE: n is number in each group</code></pre>
+<p>As you can see, the required sample size (<span class="math inline">\(n\)</span>) is much larger than our three replicates.</p>
+<p>Now we can check the sample size for the second simulation. First of all we need to compute the effect size, which we can do with the procedure we followed in the previous lecture:</p>
+<pre class="r"><code>numerator = (mean(S5)-mean(S4))
+denominator = sqrt((((length(S5)-1)*sd(S5)^2)+((length(S4)-1)*sd(S4)^2))/(length(S5)+length(S4)-2))
+
+ES = numerator/denominator
+ES</code></pre>
+<pre><code>## [1] 0.03556818</code></pre>
+<p>Now that we have the effect size we can input it in <code>pwr.anova.test</code> to compute the number of samples (remember that <span class="math inline">\(f = \frac{ES}{2}\)</span>):</p>
+<pre class="r"><code>pwr.anova.test(k=3, f=ES/2, sig.level=0.05, power=0.8) </code></pre>
+<pre><code>## 
+##      Balanced one-way analysis of variance power calculation 
+## 
+##               k = 3
+##               n = 10155.37
+##               f = 0.01778409
+##       sig.level = 0.05
+##           power = 0.8
+## 
+## NOTE: n is number in each group</code></pre>
+<hr />
+</div>
+<div id="post-hoc-power-analysis" class="section level3">
+<h3><strong><em>Post Hoc</em> Power Analysis</strong></h3>
+<p>So far we talked about power analysis only in cases where we need to compute the optimal sample size for our experiments. This is the most common way to use power analysis, and it referred to as <em>a priori</em> power analysis since it is performed before the experiment. However, this is not the only way to use power analysis. We can also perform it <em>post-hoc</em>, meaning after we have run the experiment. This is very valuable to better understand and interpret our experiment. For example, it may be that we run an analysis and our result suggest significant differences. Can we really be sure that our results are reliable?</p>
+<p>In the book <a href="https://www.statisticsdonewrong.com/">Statistics Done Wrong, by Alex Reinhart</a> there is a very good explanation of the effect of considering a significance of 5% and a power of 80%. In his example Reinhard argues that even though we are assuming we are risking false positives only in 5% of cases, these may actually be much higher (around 30%). So computing the power of our experiment can allow us to achieve more robust conclusions.</p>
+<p>Doing an <em>post-hoc</em> power analysis in R is very easy. We can simply use the same function we used above:</p>
+<pre class="r"><code>pwr.anova.test(k=3, n=3, f=0.25, sig.level=0.05)</code></pre>
+<pre><code>## 
+##      Balanced one-way analysis of variance power calculation 
+## 
+##               k = 3
+##               n = 3
+##               f = 0.25
+##       sig.level = 0.05
+##           power = 0.07756408
+## 
+## NOTE: n is number in each group</code></pre>
+<p>As you can see, in the line above we are using the function <code>pwr.anova.test</code> in a different way. We included the option <code>n</code>, with the number of samples per group we used in our first simulation, and excluded the option <code>power</code>, since this is what we need to compute.</p>
+<p>As expected, results suggest our power is very low.</p>
+<hr />
+</div>
+</div>
+<div id="k-way-anova" class="section level2">
+<h2><strong>k-way ANOVA</strong></h2>
+<p>If we need to perform ANOVA analysis for more complex factorial designs we can just add elements to the formula:</p>
+<pre class="r"><code>Two.Way = aov(yield ~ nf + topo, data=lasrosas.corn) 
+summary(Two.Way)</code></pre>
+<pre><code>##               Df Sum Sq Mean Sq F value Pr(&gt;F)    
+## nf             5  23987    4797   23.21 &lt;2e-16 ***
+## topo           3 620389  206796 1000.59 &lt;2e-16 ***
+## Residuals   3434 709721     207                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>model.tables(Two.Way, type=&quot;means&quot;)</code></pre>
+<pre><code>## Tables of means
+## Grand mean
+##          
+## 69.82831 
+## 
+##  nf 
+##         N0     N1     N2     N3     N4     N5
+##      64.97  68.62  69.65  70.34  72.56  72.83
+## rep 573.00 577.00 571.00 575.00 572.00 575.00
+## 
+##  topo 
+##         E     HT     LO       W
+##      78.7  48.67  84.91   66.74
+## rep 730.0 785.00 885.00 1043.00</code></pre>
+<p>For multiple comparisons we need to specify which contrasts to look for:</p>
+<pre class="r"><code>TukeyHSD(Two.Way, conf.level=0.95, which=c(&quot;topo&quot;)) </code></pre>
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = yield ~ nf + topo, data = lasrosas.corn)
+## 
+## $topo
+##             diff        lwr        upr p adj
+## HT-E  -30.034335 -31.934257 -28.134414     0
+## LO-E    6.206619   4.359143   8.054095     0
+## W-E   -11.961925 -13.745028 -10.178822     0
+## LO-HT  36.240955  34.429291  38.052618     0
+## W-HT   18.072411  16.326440  19.818381     0
+## W-LO  -18.168544 -19.857294 -16.479794     0</code></pre>
+<p>If we do not specify the option <code>which</code>, the function will return all contrasts.</p>
+<div id="interaction" class="section level3">
+<h3><strong>Interaction</strong></h3>
+<p>Sometimes we are interested in understanding if our treatments are interacting with each other. An interaction happens when the effects of one treatment depends on the level of another treatment. In other words, one treatment has an effect (positive or negative) on the other treatment. Before even considering including an interaction into a model we can use the function <code>interaction.plot</code>:</p>
+<pre class="r"><code>with(lasrosas.corn, {
+  interaction.plot(x.factor=nf, trace.factor=topo, response=yield)
+})</code></pre>
+<p><img src="Lecture3-Linear_Modelling_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p>In this line we are using the function <code>with</code>, which is used to tell R to run the function <code>interaction.plot</code> including the dataset <code>lasrosas.corn</code>. The plot is fairly easy to interpret, we should see lines crossing to detect a significant interaction, which is not the case here.</p>
+<p>To add an interaction term we simply need to change again the formula in the model:</p>
+<pre class="r"><code>Two.Way.Interaction = aov(yield ~ nf * topo, data=lasrosas.corn) 
+summary(Two.Way.Interaction)</code></pre>
+<pre><code>##               Df Sum Sq Mean Sq F value Pr(&gt;F)    
+## nf             5  23987    4797  23.176 &lt;2e-16 ***
+## topo           3 620389  206796 999.025 &lt;2e-16 ***
+## nf:topo       15   1993     133   0.642  0.842    
+## Residuals   3419 707727     207                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>model.tables(Two.Way.Interaction, type=&quot;means&quot;)</code></pre>
+<pre><code>## Tables of means
+## Grand mean
+##          
+## 69.82831 
+## 
+##  nf 
+##         N0     N1     N2     N3     N4     N5
+##      64.97  68.62  69.65  70.34  72.56  72.83
+## rep 573.00 577.00 571.00 575.00 572.00 575.00
+## 
+##  topo 
+##         E     HT     LO       W
+##      78.7  48.67  84.91   66.74
+## rep 730.0 785.00 885.00 1043.00
+## 
+##  nf:topo 
+##      topo
+## nf    E      HT     LO     W     
+##   N0   75.14  41.51  81.03  62.08
+##   rep 123.00 132.00 146.00 172.00
+##   N1   78.13  48.34  83.06  65.75
+##   rep 125.00 138.00 145.00 169.00
+##   N2   78.93  48.80  85.07  66.71
+##   rep 125.00 135.00 140.00 171.00
+##   N3   78.99  50.18  85.23  66.17
+##   rep 119.00 128.00 153.00 175.00
+##   N4   80.39  52.12  87.14  70.11
+##   rep 122.00 129.00 145.00 176.00
+##   N5   80.55  51.03  87.94  69.66
+##   rep 116.00 123.00 156.00 180.00</code></pre>
+<p>Please notice the asterisk (<code>*</code>) separating <code>nf</code> and <code>topo</code>, which indicates that we are also interested in testing the interaction. As you can see the interaction is not significant.</p>
+<p>We can also formally check whether adding an interaction term is important for the model by performing an <a href="http://www.statisticshowto.com/probability-and-statistics/hypothesis-testing/f-test/">F test</a>, which is simply used to compare the two variances:</p>
+<pre class="r"><code>anova(Two.Way, Two.Way.Interaction, test=&quot;F&quot;)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: yield ~ nf + topo
+## Model 2: yield ~ nf * topo
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1   3434 709721                           
+## 2   3419 707727 15    1993.2 0.6419 0.8421</code></pre>
+<p>The non significant <em>p-value</em> indicates once again that the simpler model is preferable.</p>
+<div id="notes-on-formula" class="section level4">
+<h4><strong><em>Notes on Formula</em></strong></h4>
+<p>A lot of statistical tests in R are based on formula, like the one we used above. So it is important to take a moment and make sure we know how to code the formula exactly for the model we want to test.</p>
+<p>As you probably know by now, the syntax for the classic linear model is the following:</p>
+</div>
+</div>
+<div id="y-beta_0-beta_1-x-epsilon" class="section level3">
+<h3><span class="math inline">\(y = \beta_0 + \beta_1 x + \epsilon\)</span></h3>
+<p>The R syntax is simply: <code>y ~ x</code>.</p>
+<p>To add elements we would simple include a <code>+</code>: <code>y ~ x1 + x2</code>. This will test the main effects for <code>x1</code> and <code>x2</code>. In some cases we are interested in testing the interaction, and the model can thus be written as: <code>y ~ x1 * x2</code>. This will test both the main effects and their interaction. If we are only interested in testing the interaction the formula will become: <code>y ~ x1 : x2</code></p>
+<p>With more complex models we may be interested in including a lot more terms in the equations, but only testing two-way interactions. This can be coded like so:</p>
+<pre><code>y ~ (x1 + x2 + x3)^2</code></pre>
+<p>This formula will guarantee that we do <strong>not</strong> test for the interaction <code>x1*x2*x3</code>, but only for interactions including two predictors.</p>
+<p>More details about formula in R: <a href="http://faculty.chicagobooth.edu/richard.hahn/teaching/formulanotation.pdf">Statistical Formula Notation in R, by chicagobooth.edu</a> <a href="https://science.nature.nps.gov/im/datamgmt/statistics/r/formulas/">Statistical Formulas, by nature.nps.gov</a></p>
+</div>
+<div id="anova-for-block-designs" class="section level3">
+<h3><strong>ANOVA for Block Designs</strong></h3>
+<p>For block designs the syntax to perform the ANOVA needs to account for the blocking factor. To experiment with this design we are going to load another dataset from the package <code>agridat</code>:</p>
+<pre class="r"><code>data(besag.bayesian)
+str(besag.bayesian)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    225 obs. of  4 variables:
+##  $ col  : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ row  : int  75 74 73 72 71 70 69 68 67 66 ...
+##  $ yield: num  9.29 8.16 8.97 8.33 8.66 ...
+##  $ gen  : Factor w/ 75 levels &quot;G01&quot;,&quot;G02&quot;,&quot;G03&quot;,..: 57 39 3 48 75 21 66 12 30 32 ...</code></pre>
+<p>This is randomized complete block design (the blocking factor is under <code>col</code>), and the syntax to analyse it is below:</p>
+<pre class="r"><code>besag.bayesian$col = as.factor(besag.bayesian$col)
+
+CBD.ANOVA = aov(yield ~ col + gen, data=besag.bayesian)
+summary(CBD.ANOVA)</code></pre>
+<pre><code>##              Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+## col           2  20.79  10.393  16.104 4.74e-07 ***
+## gen          74 107.19   1.448   2.244 1.64e-05 ***
+## Residuals   147  94.87   0.645                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 1 observation deleted due to missingness</code></pre>
+<p>The first line of code simply converts the column <code>col</code> from numerical to factorial. This is useful to know because in many datasets blocks are included as numbers, and therefore R reads them as numerical values.</p>
+<p>Then we can perform the ANOVA simply by including the blocking factor first.</p>
+</div>
+<div id="anova-for-split-plot-designs" class="section level3">
+<h3><strong>ANOVA for Split-Plot Designs</strong></h3>
+<p>Split-plot is another design that is sometimes used and that needs to be treated carefully during analysis. For this example we are loading a dataset (modified) presented in a recent paper in the European Journal of Soil Science by Webster and Lark, entitled <a href="http://onlinelibrary.wiley.com/doi/10.1111/ejss.12511/abstract">Analysis of variance in soil research: let the analysis fit the design</a>.</p>
+<p>The design is represented in the image below (taken from the paper):</p>
+<div class="figure">
+<img src="Images/Split-Plot_Modified.jpg" alt="Source: Analysis of variance in soil research: let the analysis fit the design" />
+<p class="caption">Source: Analysis of variance in soil research: let the analysis fit the design</p>
+</div>
+<p>Please download the file <code>exp3.csv</code> from the learning hub, place it in a folder of your choice and load it using the <code>read.csv</code> function:</p>
+<pre class="r"><code>soil.df = read.csv(&quot;exp3.csv&quot;,header=T)</code></pre>
+<hr />
+<p>An alternative way of importing the data is from my <a href="https://github.com/fveronesi/AdvancedResearchMethods">GitHub</a> with the package <code>RCurl</code>:</p>
+<pre class="r"><code>install.packages(&quot;RCurl&quot;)</code></pre>
+<pre class="r"><code>library(RCurl)
+
+Data.URL = getURL(&quot;https://raw.githubusercontent.com/fveronesi/AdvancedResearchMethods/master/exp3.csv&quot;)
+
+soil.df = read.csv(text=Data.URL)</code></pre>
+<hr />
+<p>After the data are loaded, we can convert some columns into factors and perform the analysis with the following line:</p>
+<pre class="r"><code>soil.df$Manures&lt;-factor(soil.df$Manures)
+soil.df$Irrigation&lt;-factor(soil.df$Irrigation)
+soil.df$Blocks&lt;-factor(soil.df$Blocks)
+soil.df$Whole_Plot&lt;-factor(soil.df$Whole_Plot)
+soil.df$Split_Plot&lt;-factor(soil.df$Split_Plot)
+
+exp3 &lt;-aov(Respiration_rate ~ Blocks + Irrigation*Manures + Error(Whole_Plot/Split_Plot), data = soil.df)
+
+summary(exp3)</code></pre>
+<pre><code>## 
+## Error: Whole_Plot
+##            Df Sum Sq Mean Sq
+## Irrigation  2  31669   15834
+## 
+## Error: Whole_Plot:Split_Plot
+##                    Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+## Manures             3  29645    9882 110.357 0.00899 **
+## Irrigation:Manures  4   1196     299   3.338 0.24357   
+## Residuals           2    179      90                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Error: Within
+##                    Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+## Blocks              3   2349     783   2.590   0.0763 .  
+## Manures             3  89969   29990  99.174 1.16e-13 ***
+## Irrigation:Manures  6    624     104   0.344   0.9064    
+## Residuals          24   7258     302                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The problem with using <code>aov</code> for repeated measures is that the output above is the only thing we can obtain. The other functions like <code>TukeyHSD</code> do not work, so in many book repeated measures are often only approached with linear mixed effect models.</p>
+<hr />
+</div>
+</div>
+<div id="anova-for-repeated-measures" class="section level2">
+<h2><strong>ANOVA for Repeated Measures</strong></h2>
+<p>The same <code>Error</code> option we included to deal with split plot designs can also be used to deal with repeated measures, meaning measures taken at regular time intervals. For this example we can load a dataset available as part of the material of the <a href="http://www.bio.ic.ac.uk/research/mjcraw/therbook/">R Book</a>:</p>
+<pre class="r"><code>fertilizer = read.table(&quot;fertilizer.txt&quot;, sep=&quot;&quot;, header=T)
+head(fertilizer)</code></pre>
+<pre><code>##   root week plant fertilizer
+## 1  1.3    2   ID1      added
+## 2  3.5    4   ID1      added
+## 3  7.0    6   ID1      added
+## 4  8.1    8   ID1      added
+## 5 10.0   10   ID1      added
+## 6  2.0    2   ID2      added</code></pre>
+<p>This dataset measured root length weeks apart in several plants with and without fertilizer. The syntax to perform repeated measures analysis with the function <code>aov</code> is the following:</p>
+<pre class="r"><code>Repeated.Measures = aov(root ~ fertilizer + Error(plant/fertilizer), data=fertilizer)
+
+summary(Repeated.Measures)</code></pre>
+<pre><code>## 
+## Error: plant
+##            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+## fertilizer  1 25.650  25.650   33.06 0.000185 ***
+## Residuals  10  7.758   0.776                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Error: Within
+##           Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Residuals 48  433.2   9.025</code></pre>
+<p>Please notice that we are including the variable <code>week</code> but the variable <code>plant</code>. In fact, we need to tell R which observations belong to the same subject, so R knows that a particular subset has been measured multiple times on the same plot or plant.</p>
+<p>As with split-plot, the problem with using <code>aov</code> for repeated measures is that the output above is the only thing we can obtain. The other functions like <code>TukeyHSD</code> do not work, so in many book repeated measures are often only approached with linear mixed effect models.</p>
+<hr />
+</div>
+<div id="other-forms-of-linear-modelling" class="section level2">
+<h2><strong>Other Forms of Linear Modelling</strong></h2>
+<p>Up to now we dealt with factorial designs, for which ANOVA is the most appropriate test. However, in cases when we are dealing with continuous variables (or a mix between continuous and categorical) we need to change to linear regression.</p>
+<div id="ancova" class="section level3">
+<h3><strong>ANCOVA</strong></h3>
+<p>A particular case of linear model is the ANCOVA, where the explanatory variables are a mix between factorial and continuous. With such a model we are usually still interested in understanding the differences between levels in categorical variables; however, we also want to correct the estimated means using other data to account for additional data that can explain some of the variance in the response.</p>
+<p>In the dataset <code>lasrosas.corn</code> for example we have a variable named <code>bv</code> that represents the soil brightness, which is a proxy for organic matter content. Let’s assume that we still want to understand the effect of nitrogen levels on yield, but we also want to correct our model for soil brightness. This way we would have a better idea of the true effect of nitrogen, after accounting for different fertility levels within the field. To fit this model we simply need to use the following line:</p>
+<pre class="r"><code>ancova.mod = lm(yield ~ nf + bv, data=lasrosas.corn)
+
+summary(ancova.mod)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = yield ~ nf + bv, data = lasrosas.corn)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -78.345 -10.847  -3.314  10.739  56.835 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 268.02772    4.99630  53.645  &lt; 2e-16 ***
+## nfN1          3.52312    0.95075   3.706 0.000214 ***
+## nfN2          5.07074    0.95328   5.319 1.11e-07 ***
+## nfN3          5.60318    0.95159   5.888 4.28e-09 ***
+## nfN4          7.34642    0.95284   7.710 1.64e-14 ***
+## nfN5          8.00305    0.95158   8.410  &lt; 2e-16 ***
+## bv           -1.16458    0.02839 -41.015  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 16.12 on 3436 degrees of freedom
+## Multiple R-squared:  0.3406, Adjusted R-squared:  0.3394 
+## F-statistic: 295.8 on 6 and 3436 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>To perform the multiple comparison and obtain the predicted marginal means, meaning men values for each N level corrected by brightness, we can use the following line:</p>
+<pre class="r"><code>lsmeans(ancova.mod, specs=c(&quot;nf&quot;), adjust=&quot;tukey&quot;, contr=&quot;cld&quot;)</code></pre>
+<pre><code>##  nf   lsmean        SE   df lower.CL upper.CL .group
+##  N0 64.90413 0.6734523 3436 63.58372 66.22454  1    
+##  N1 68.42725 0.6711277 3436 67.11140 69.74310   2   
+##  N2 69.97487 0.6746750 3436 68.65206 71.29767   23  
+##  N3 70.50731 0.6722909 3436 69.18918 71.82544   234 
+##  N4 72.25055 0.6740817 3436 70.92890 73.57219    34 
+##  N5 72.90718 0.6722805 3436 71.58907 74.22529     4 
+## 
+## Confidence level used: 0.95 
+## P value adjustment: tukey method for comparing a family of 6 estimates 
+## significance level used: alpha = 0.05</code></pre>
+<p>This function returns the estimated marginal means, with confidence intervals. We also have the last column with different numbers related to significant differences between groups. For example, here N0 is different from the rest of the levels, while N1, N2, and N3 are not different, and in fact belong all to group 2.</p>
+<p>We can compare these values with what the one-way ANOVA estimated:</p>
+<pre class="r"><code>model.tables(One.Way, type=&quot;means&quot;)</code></pre>
+<pre><code>## Tables of means
+## Grand mean
+##          
+## 69.82831 
+## 
+##  nf 
+##         N0     N1     N2     N3     N4     N5
+##      64.97  68.62  69.65  70.34  72.56  72.83
+## rep 573.00 577.00 571.00 575.00 572.00 575.00</code></pre>
+<p>As you can see the marginal means corrected by brightness are slightly different, but not much. This means that probably the field is homogeneous and therefore brightness does not highly affect the experiment. However, ANCOVA are great ways to correct our model for potential sources of bias we have not accounted for in the design, but which could cause issues in predicting the mean values of the treatment levels.</p>
+<p>The output of <code>lsmeans</code> can be plotted to better interpret its results:</p>
+<pre class="r"><code>lsmeans(ancova.mod, specs=c(&quot;nf&quot;), adjust=&quot;tukey&quot;, contr=&quot;cld&quot;) %&gt;%
+  plot</code></pre>
+<p><img src="Lecture3-Linear_Modelling_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+</div>
+<div id="linear-regression" class="section level3">
+<h3><strong>Linear Regression</strong></h3>
+<p>With linear regression we generally intent a framework when we only deal with continuous explanatory variables. For example, in the dataset <code>lasrosas.corn</code> there are two variables related to nitrogen amendments. The first the is the variable <code>nf</code>, which is categorical; the second is <code>nitro</code>, which is continuous. However, they are representing the same amendments, the difference is that <code>nitro</code> recorded the actual amount of nitrogen applied to each plot, while <code>nf</code> assigned a category to each level.</p>
+<p>In the one-way ANOVA model we used the variable <code>nf</code>, and the research question underlying the test was to detect any differences between these levels. However, in some occasions we could be interested in knowing what is the impact on yield of unit increases in nitrogen. To answer this question we need to fit a different model:</p>
+<pre class="r"><code>LinReg = lm(yield ~ nitro, data = lasrosas.corn)
+summary(LinReg)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = yield ~ nitro, data = lasrosas.corn)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -53.183 -15.341  -3.079  13.725  45.897 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 65.843213   0.608573 108.193  &lt; 2e-16 ***
+## nitro        0.061717   0.007868   7.845 5.75e-15 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 19.66 on 3441 degrees of freedom
+## Multiple R-squared:  0.01757,    Adjusted R-squared:  0.01728 
+## F-statistic: 61.54 on 1 and 3441 DF,  p-value: 5.754e-15</code></pre>
+<p>As you can see we are now using the function <code>lm</code>, which stands for linear model. The predictor now is <code>nitro</code>, which is a continuous variable. The summary provides the slope of line (0.061717), which tells us the average increase in yield for each unit increase in nitrogen. Basically, for each additional unit of nitrogen we add to the soil we would increase yield on average of 0.06 quintals/ha, or 6 kg/ha.</p>
+<hr />
+</div>
+</div>
+<div id="checking-assumptions" class="section level2">
+<h2><strong>Checking Assumptions</strong></h2>
+<p>As mentioned, there are some assumptions required to fit any linear model, being an ANOVA or a linear regression. In particular, normality and equality of variance are the most important.</p>
+<p>We can check that our model complies with these assumptions using the function <code>plot</code>:</p>
+<pre class="r"><code> par(mfrow=c(1,2))  
+ plot(LinReg, which=c(1,2))</code></pre>
+<p><img src="Lecture3-Linear_Modelling_files/figure-html/unnamed-chunk-41-1.png" width="960" /></p>
+<p>The first plot on the left represents the residuals against the fitted values (or the estimates from the model). One of our assumptions is that the error term had mean of zero and constant variance. This means that we should see the residuals equally spread around zero, and a more or less horizontal line (red line) with intercept on the zero. In this case the line is very close to being straight across zero, and the spread is more or less constant throughout the range of fitted values. Therefore, we can conclude our model does <strong>not</strong> violate this assumption.</p>
+<p>The second plot is the QQplot of the residuals. This plots the quantiles of the distribution of residuals against quantiles of a standard normal distribution (with mean = 0 and sd = 1). The more our samples fit a normal distribution, the more these points should lie on a straight line with an inclination of 45 degrees. In this case it seems the quantile line is not exactly straight, so we need an additional test to determine whether we can accept normality. We can compute the skewness of the residuals, with the function from the package <code>moments</code>:</p>
+<pre class="r"><code>LinReg %&gt;%
+  residuals %&gt;%
+  skewness()</code></pre>
+<pre><code>## [1] 0.4073682</code></pre>
+<p>Since the skewness is below <span class="math inline">\(\pm0.5\)</span> <a href="https://www.wiley.com/en-gb/Geostatistics+for+Environmental+Scientists%2C+2nd+Edition-p-9780470028582">(Webster and Oliver, 2007)</a>, we can conclude that our results do <strong>not</strong> violate the assumption of normality either.</p>
+<hr />
+</div>
+<div id="power-analysis-for-liner-models" class="section level2">
+<h2><strong>Power Analysis for Liner Models</strong></h2>
+<p>The package <code>pwr</code> provides a function to compute power and sample size requirements for linear models (ANCOVA and linear regression). The syntax is a bit more complex that what we used before for ANOVA and require a different measure of the effect size. For this reason, first of all we are going to look at another function in the package <code>sjstats</code> to obtain an ANOVA table with effect size for any linear model:</p>
+<pre class="r"><code>anova_stats(ancova.mod)</code></pre>
+<pre><code>## # A tibble: 3 x 12
+##   term         df   sumsq  meansq statistic p.value   etasq partial.etasq
+##   &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;
+## 1 nf           5.  23987.   4797.      18.5      0.  0.0180        0.0260
+## 2 bv           1. 437177. 437177.    1682.       0.  0.323         0.329 
+## 3 Residuals 3436. 892933.    260.      NA       NA  NA            NA     
+## # ... with 4 more variables: omegasq &lt;dbl&gt;, partial.omegasq &lt;dbl&gt;,
+## #   cohens.f &lt;dbl&gt;, power &lt;dbl&gt;</code></pre>
+<p>For the function <code>pwr.f2.test</code> we need to use <span class="math inline">\(f^2\)</span> as effect size, which can be computed from the partial EtaSquare, which is another effect size index specific to ANOVA:</p>
+<div id="f-fracmu2_p1-mu2_p" class="section level4">
+<h4><span class="math inline">\(f = \frac{\mu^2_p}{(1-\mu^2_p)}\)</span></h4>
+<p>Partial EtaSquared is computed as:</p>
+</div>
+<div id="mu2_p-fracss_treatmentss_treatment-ss_residuals" class="section level4">
+<h4><span class="math inline">\(\mu^2_p = \frac{SS_treatment}{SS_treatment + SS_residuals}\)</span></h4>
+<p>and it is included in the output above.</p>
+<p>To compute <span class="math inline">\(f^2\)</span> for this experiment we simply need to do:</p>
+<pre class="r"><code>f2 = 0.018 / (1-0.018)
+f2</code></pre>
+<pre><code>## [1] 0.01832994</code></pre>
+<p>Now we can look at the syntax for the function <code>pwr.f2.test</code>. For this function, we need to include two parameters: <code>u</code> and <code>v</code>. The first <code>u</code> is the number of coefficients minus the intercept, while the second can be computed as <span class="math inline">\(v = n + u + 1\)</span>, where <span class="math inline">\(n\)</span> is the number of samples.</p>
+<p>To perform a <em>post-hoc</em> power analysis we simply need to compute the coefficients of the model, minus the intercept:</p>
+<pre class="r"><code>coef(ancova.mod)</code></pre>
+<pre><code>## (Intercept)        nfN1        nfN2        nfN3        nfN4        nfN5 
+##  268.027720    3.523122    5.070736    5.603178    7.346417    8.003051 
+##          bv 
+##   -1.164582</code></pre>
+<p>here <code>u</code> is equal to 6. Then we can compute <code>v</code>:</p>
+<pre class="r"><code>v = nrow(lasrosas.corn) - (length(coef(ancova.mod))-1)  - 1</code></pre>
+<p>then input everything in the function:</p>
+<pre class="r"><code>pwr.f2.test(u=6, v=v, f2=f2, sig.level = 0.05)</code></pre>
+<pre><code>## 
+##      Multiple regression power calculation 
+## 
+##               u = 6
+##               v = 3436
+##              f2 = 0.01832994
+##       sig.level = 0.05
+##           power = 0.9999994</code></pre>
+<p>which return a power of almost 100%.</p>
+<p>To perform an <em>a-priori</em> power analysis we only need to specify <code>u</code> and the function will return <code>v</code>. The number <code>u</code> depends on how many explanatory variables we have in the model. For example, let’s say we have an experiment with two treatments (the first with 4 levels, the second with 3) and we are also including a continuous explanatory variable. To determine the number of coefficients we need to remember that categorical variables are always reported with a reference level, so the number of coefficients in the model for the first treatment (4 levels) will be 3, while for continuous variable the number of coefficients is always one. Let’s assume we want to power the experiment to detect the interaction between treatments, in this case the number of coefficients will be: <span class="math inline">\(u = (4-1)+(3-1)+1+[(4-1)\times(3-1)] = 12\)</span>.</p>
+<p>Since we are working with R, we can check this number by simulating a dataset. We just need to change the treatment structure to obtain the correct number of coefficients (and remove the intercept, that is the <code>-1</code>):</p>
+<pre class="r"><code>dat = expand.grid(TRT1=c(&quot;T1&quot;,&quot;T2&quot;,&quot;T3&quot;,&quot;T4&quot;), TRT2=c(&quot;T1&quot;,&quot;T2&quot;,&quot;T3&quot;), V=1)
+
+dat$RESP = rnorm(n=nrow(dat))
+
+mod = lm(RESP ~ TRT1*TRT2 + V, data=dat)
+length(coef(mod))-1</code></pre>
+<pre><code>## [1] 12</code></pre>
+<p>In regards to the effect size, since this is an <em>a-priori</em> analysis we need to assume a medium effect size, which for <span class="math inline">\(f^2\)</span> is 0.15 (as reported directly by Cohen). So the call to the function would become:</p>
+<pre class="r"><code>pwr.f2.test(u=12, f2=0.15, sig.level = 0.05, power=0.8)</code></pre>
+<pre><code>## 
+##      Multiple regression power calculation 
+## 
+##               u = 12
+##               v = 113.4395
+##              f2 = 0.15
+##       sig.level = 0.05
+##           power = 0.8</code></pre>
+<p>The output the function returns in <code>v</code>, which can be converted to sample size with:</p>
+</div>
+<div id="n-v-u-1" class="section level4">
+<h4><span class="math inline">\(n = v + u + 1\)</span></h4>
+<pre class="r"><code>ceiling(113.4395) + 12 + 1</code></pre>
+<pre><code>## [1] 127</code></pre>
+<hr />
+</div>
+</div>
+<div id="conclusions" class="section level2">
+<h2><strong>Conclusions</strong></h2>
+<p>In this lecture we looked at all the most important statistical test we can perform on our data. We started describing ANOVA, which is a particular form of linear modelling specific for factorial designs, and learning how to interpret its results and check if we met all the assumptions. Then we covered linear regression, which is what we normally use when we have either only continuous predictors or a mix between categorical and continuous.</p>
+<hr />
+</div>
+<div id="references" class="section level2">
+<h2><strong>References</strong></h2>
+<p>Please look at my Blog for additional functions that were not covered in the lecture:</p>
+<ul>
+<li><p><a href="http://r-video-tutorial.blogspot.co.uk/2017/06/linear-models-anova-glms-and-mixed.html">Linear Modelling - Fabio Veronesi</a></p></li>
+<li><p>Other books can be found in my <a href="https://liveharperac-my.sharepoint.com/:f:/g/personal/00754140_harper-adams_ac_uk/ElEdqXsw35BFm0aX4rUQnvMBTEyQGdVOXLkwhNx5irsjsw">OneDrive folder</a> under “Inferential Statistics”</p></li>
+</ul>
+<hr />
+</div>
+<div id="homework" class="section level2">
+<h2><strong>Homework</strong></h2>
+<ol style="list-style-type: decimal">
+<li><p>From this <a href="https://www.sheffield.ac.uk/mash/statistics2/data">page</a>, load the Crime dataset and create a regression model that can explain part of the variance in the dependent variable (CrimeRate).</p></li>
+<li><p>From the same page load the Birthweigth dataset and perform a logistic regression as suggested in the data description.</p></li>
+</ol>
+</div>
+
+<p>Copyright &copy; 2018 Dr. Fabio Veronesi - Creative Commons Attribution 3.0 Unported</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

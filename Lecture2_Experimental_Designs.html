@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Dr. Fabio Veronesi" />
+
+
+<title>Lecture 2 - Experimental Designs</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Comprehensive R Course on Inferential Statistics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Course Summary</a>
+</li>
+<li>
+  <a href="Lecture1_BasicR.html">Lecture 1</a>
+</li>
+<li>
+  <a href="Lecture2_Experimental_Designs.html">Lecture 2</a>
+</li>
+<li>
+  <a href="Lecture3-Linear_Modelling.html">Lecture 3</a>
+</li>
+<li>
+  <a href="Lecture4-GLM.html">Lecture 4</a>
+</li>
+<li>
+  <a href="Lecture5-Mixed_Effect_Models.html">Lecture 5</a>
+</li>
+<li>
+  <a href="Lecture6-Mixed_Effect_Models.html">Lecture 6</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Lecture 2 - Experimental Designs</h1>
+<h4 class="author"><em>Dr. Fabio Veronesi</em></h4>
+<h4 class="date"><em>April 2018</em></h4>
+
+</div>
+
+
+<div id="summary" class="section level2">
+<h2><strong>Summary</strong></h2>
+<ul>
+<li>Introduction</li>
+<li>Installing and importing packages</li>
+<li>Basics of inferential statistics</li>
+<li>Power Analysis</li>
+<li>Experimental designs</li>
+<li>t-test</li>
+<li>Sample size calculation</li>
+</ul>
+<hr />
+</div>
+<div id="introduction" class="section level2">
+<h2><strong>Introduction</strong></h2>
+<p>After a general introduction to the R language, this lecture will start describing some important statistical techniques that are useful in Agriculture for running successful experiments.</p>
+<hr />
+</div>
+<div id="installing-and-importing-packages" class="section level2">
+<h2><strong>Installing and importing packages</strong></h2>
+<p>The power of R comes from the fact that it is open-source, meaning that anyone can contribute by creating functions that researchers can freely use for their work. These functions are included in packages, which are add-on that allow us to use methods that are not normally included in the R version we download.</p>
+<p>To install these packages we have two ways. We can use the function <code>install.packages</code>:</p>
+<pre class="r"><code>install.packages(&quot;agricolae&quot;)
+install.packages(&quot;pwr&quot;)</code></pre>
+<p>The second option is using the menu packages located on the lower right panel in R Studio:</p>
+<div class="figure">
+<img src="Images/install_packages_300.png" alt="Source: lsru.github.io" />
+<p class="caption">Source: lsru.github.io</p>
+</div>
+<p>Once the package has been installed we can simply load it with the function <code>library</code>:</p>
+<pre class="r"><code>library(agricolae)
+library(pwr)</code></pre>
+<hr />
+</div>
+<div id="basics-of-inferential-statistics" class="section level2">
+<h2><strong>Basics of inferential statistics</strong></h2>
+<p>In research, we are often interested in measuring the effect of some treatments on a certain variable. For example, we may be interested in understanding how nitrogen affects plant height. If we had unlimited time and resources, we would test different levels of nitrogen in many soil type and climates around the world, and see how these affect plant height. This way we could account for errors derived from different soil types, fertility levels, moisture content ect. However, time and resources are often limited, so this approach is not realistic. To overcome this limitation we need to design small scale experiment that would still allow us to draw conclusion that could be used in other fields (i.e. with other soil types, fertility levels, moisture content ect).</p>
+<p>In statistical terms we say that we do not have access to the entire population, i.e. we do not have access to all the plants in the world to test our treatments. Since we are working on relatively small scale experiments, we only have access to relatively small samples. However, the purpose of statistical analysis is to make important decisions about the general population, i.e. all plants in the world, based only on our relatively small samples.</p>
+<p>To better understand these points we can look at the image below:</p>
+<div class="figure">
+<img src="Images/ANOVA_Example.png" alt="ANOVA Example" />
+<p class="caption">ANOVA Example</p>
+</div>
+<p>This image depicts a schematic representation of what could be the effect on plant height of two different treatments. As it is often the case in experimental science, even though plants belonging to the same group have received the same exact treatment (e.g. same level of nitrogen), they react differently. Some plants are smaller than others. This is the effect of natural variability, which may depend on local differences in soil conditions, genetic differences or other factors that we cannot account for in our experiment. However, if this natural variability is too high it may “mask” the real effect of treatments. In other words, we would not be able to successfully detect differences between groups, in cases when difference within groups are large.</p>
+<p>The only way we have to reduce the impact of this random variation is to make sure we have enough samples to minimise the standard error of the mean (SEM). This is referred to as the power of the experiment. This is where replication becomes important. To reduce the SEM we need to increase the number of samples. However, since time and resources are limited we need to make sure we are not wasting them. So the number of samples need to be the lowest possible to obtain reliable results.</p>
+<p>We can better understand this point with a simple simulation:</p>
+<pre class="r"><code>S1 = rnorm(n=3, mean=5, sd=2.5)
+S2 = rnorm(n=3, mean=5, sd=2.5)</code></pre>
+<p>In this example we simulate two samples from a population with normal distribution, mean value equal to 5 and standard deviation of 2.5. Since they come from the same population we would expect them to be similar. However, mean values computed from three random samples may look very different. This is due to the large variation around the mean, which we cannot control as it may be driven by natural variability:</p>
+<pre class="r"><code>mean(S1); mean(S2)</code></pre>
+<pre><code>## [1] 6.33634</code></pre>
+<pre><code>## [1] 4.582595</code></pre>
+<p>With the same function we introduced in the previous lecture, we can compute standard error of the mean and confidence intervals:</p>
+<pre class="r"><code>SEM = function(x){sd(x) / sqrt(length(x))}
+
+data.frame(Lower95 = c(mean(S1)-2*SEM(S1), mean(S2)-2*SEM(S2)),
+           Mean = c(mean(S1), mean(S2)),
+           Upper95 = c(mean(S1)+2*SEM(S1), mean(S2)+2*SEM(S2)))</code></pre>
+<pre><code>##     Lower95     Mean  Upper95
+## 1 4.4509704 6.336340 8.221709
+## 2 0.8908728 4.582595 8.274316</code></pre>
+<p>Confidence intervals provide a way to assess the accuracy of the mean value we compute from our sample. In fact, the 95% confidence intervals we calculated (as twice the standard error) provide us a range within which we are 95% certain of finding the true value of the mean, i.e. the population mean. That is why we can use confidence intervals to compare groups.</p>
+<p>As you can see, confidence intervals are very wide and they overlap. This indicates very clearly that the two samples may come from the same population. In this case, since we know they come from the same population, our conclusion is correct.</p>
+<p>However, let’s look at another sample:</p>
+<pre class="r"><code>S3 = rnorm(n=3, mean=6.25, sd=2.5)
+
+data.frame(Lower95 = c(mean(S1)-2*SEM(S1), mean(S3)-2*SEM(S3)),
+           Mean = c(mean(S1), mean(S3)),
+           Upper95 = c(mean(S1)+2*SEM(S1), mean(S3)+2*SEM(S3)))</code></pre>
+<pre><code>##    Lower95     Mean  Upper95
+## 1 4.450970 6.336340 8.221709
+## 2 4.631264 6.798724 8.966184</code></pre>
+<p>Sample 3 is now coming from a population with mean equal to 6.25, which is half a standard deviation higher than the previous population. So we would expect to find differences between sample 1 and sample 3. However, once again the confidence intervals overlap, suggesting no differences. So in this case we are reaching a wrong conclusion, saying the two samples are the same when in fact they are different. In other words we have a false negative conclusion. This is because the sample size is too low and the confidence intervals are therefore very wide.</p>
+<p>It may also happen, for example in cases where the distribution has high standard deviation compared to the mean, that even though samples come from the same population, confidence intervals barely overlap or not overlap at all. This is possible, and will make us erroneously conclude the the two samples are different. This is known as a false positive.</p>
+<p>In statistical terms, inferential statistics tests a null hypothesis, which assumes our treatments have no effect (i.e. samples come from the same population), against an alternative hypothesis, in which we try to demonstrate the effectiveness of our treatments (i.e. samples come from two distinct populations). The result is a probability (<em>p-value</em>), which allows us to either accept or reject the null hypothesis. However, to make sure we are not obtaining false positive or false negative outcomes we need to consider two quantities:</p>
+<div class="figure">
+<img src="Images/type1and2error.gif" alt="Source: datasciencedojo.com" />
+<p class="caption">Source: datasciencedojo.com</p>
+</div>
+<p>The probability of incurring in a type I error (false positive) is indicated by <span class="math inline">\(\alpha\)</span> (or significance level) and usually takes a value of 5%; this means that we are happy to consider a scenario where we have 5% chances of rejecting the null hypothesis when it is actually true. If we are not happy with this, we can further decrease this probability by decreasing the value of <span class="math inline">\(\alpha\)</span> (for example to 1%). On the contrary the probability of incurring in a type II error (false negative) is expressed by <span class="math inline">\(\beta\)</span>, which usually takes a value of 20% (meaning a power of 80%). This means we are happy to work assuming that we have a 20% chance of accepting the null hypothesis when it is actually false. If our experiments are not designed properly we cannot be sure whether we actually incurred in one of these two errors. In other words, if we run a bad experiment and we obtain an insignificant <em>p-value</em> it may be that we incurred in a type II error, meaning that in reality our treatment works but its effect cannot be detected by the experiment. However, it may also be that we obtained a significant <em>p-value</em> but we incurred in a type I error, and if we repeat the experiment we will find different results.</p>
+<p>In summary, designing experiments requires us to think very carefully about all the aspects we mentioned above. In particular, there are three basic principles that we need to consider when designing good and robust experiments:</p>
+<ul>
+<li><p><strong>Randomization</strong>: this is the most important step in every experiment. Randomizing treatments guarantee that the conclusions we make are unbiased. For example, let’s say we are testing nitrogen levels in a field that may be affected by changes in soil fertility (which are unknown to us). If we provide high nitrogen to plants only in one part of the field we may end up concluding that this has an effect on plant height only because the soil in that part of the field was more fertile. If we randomize treatments across the field we effectively account for different soil conditions.</p></li>
+<li><p><strong>Blocking</strong>: this is another tool we can use to minimise the error of our experiment. Let’s go back to our previous example of a field experiment. If we know that a particular area of our field has more fertile soils, we can partition our study area and create two blocks. The idea is that we can better control the error that different soil conditions may cause (i.e. we effectively minimise the within groups variation), by effectively design two sub-experiments in one. If we use blocks, we need to randomize treatments within each block, as if they were separate experiments.</p></li>
+<li><p><strong>Replication</strong>: randomization and blocking are two powerful ways to control for natural variation. However, the reality is we can never fully minimise it so we need to find ways to reduce it in our samples. We can achieve this by working with larger samples, thus reducing confidence intervals around the mean and allowing the statistical tests to better detect treatment effects.</p></li>
+</ul>
+<hr />
+</div>
+<div id="experimental-designs" class="section level2">
+<h2><strong>Experimental designs</strong></h2>
+<p>The selection of the design most suitable for the experiment we have in mind is of crucial important. Several factors needs to be considered before we can decide an experimental design. However, there are some designs that are more commonly used that other. For example, in field experiments we often find either complete randomized designs, or complete block designs. While in animal studies the latin square is the most common.</p>
+<p>All these designs respect the basic principles outline above, but allow us to make sure the experiment is optimised for our treatment structure and for any practical constrain we may have, e.g. lack of space.</p>
+<div id="complete-randomized-design-crd" class="section level3">
+<h3><strong>Complete randomized design (CRD)</strong></h3>
+<p>This is probably the most common design, and it is generally used when conditions are uniform, so we do not need to account for local variations due for example to soil conditions.</p>
+<p>The package <code>agricolae</code> offers several functions to cover all the most important experimental designs.</p>
+<p>First of all, we need to specify our treatment structure:</p>
+<pre class="r"><code>Treatment = c(&quot;A&quot;,&quot;B&quot;,&quot;Control&quot;) </code></pre>
+<p>Then we can use the function <code>design.crd</code> to create a complete randomized design:</p>
+<pre class="r"><code>CRD = design.crd(trt=Treatment, r=3)</code></pre>
+<p>We need to specify two options: <code>trt</code>, for treatment, and <code>r</code> for the number of replicates.</p>
+<p>The results is a complex object:</p>
+<pre class="r"><code>CRD</code></pre>
+<pre><code>## $parameters
+## $parameters$design
+## [1] &quot;crd&quot;
+## 
+## $parameters$trt
+## [1] &quot;A&quot;       &quot;B&quot;       &quot;Control&quot;
+## 
+## $parameters$r
+## [1] 3 3 3
+## 
+## $parameters$serie
+## [1] 2
+## 
+## $parameters$seed
+## [1] 1874208053
+## 
+## $parameters$kinds
+## [1] &quot;Super-Duper&quot;
+## 
+## $parameters[[7]]
+## [1] TRUE
+## 
+## 
+## $book
+##   plots r Treatment
+## 1   101 1   Control
+## 2   102 1         B
+## 3   103 2   Control
+## 4   104 2         B
+## 5   105 3   Control
+## 6   106 1         A
+## 7   107 2         A
+## 8   108 3         B
+## 9   109 3         A</code></pre>
+<p>We are interested in the last element of the object <code>CRD</code>:</p>
+<pre class="r"><code>CRD$book</code></pre>
+<pre><code>##   plots r Treatment
+## 1   101 1   Control
+## 2   102 1         B
+## 3   103 2   Control
+## 4   104 2         B
+## 5   105 3   Control
+## 6   106 1         A
+## 7   107 2         A
+## 8   108 3         B
+## 9   109 3         A</code></pre>
+<p>This is the table we can use to establish our design in the field, using the plot IDs to make sure we use the right treatment in the right place.</p>
+<p>One thing we need to remember in the package <code>agricolae</code> is that we can only provide a vector with our treatment structure. However, if our experiment is complex we need some more lines of code to plan it properly.</p>
+<p>Let’s look at the following lines:</p>
+<pre class="r"><code>Trt1 = c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;)  
+Trt2 = c(&quot;1&quot;,&quot;2&quot;)  
+Trt3 = c(&quot;+&quot;,&quot;-&quot;)  
+
+TRT.tmp = as.vector(sapply(Trt1, function(x){paste0(x,Trt2)}))  
+TRT = as.vector(sapply(TRT.tmp, function(x){paste0(x,Trt3)}))  
+TRT.Control = c(TRT, rep(&quot;Control&quot;, 2)) </code></pre>
+<p>In this example we are planning an experiment with three levels of treatment. This means for example that treatment <code>A</code>, can be split into <code>A1</code> and <code>A2</code>, and these can be further divided into <code>A1+</code> and <code>A1-</code>. The same is true for <code>B</code> and <code>C</code>. To complicate things we are also including Control, which needs to be separated from the other treatments.</p>
+<p>The function <code>sapply</code> allows us to iterate through the vector <code>Tr1</code> and pasting (with the function<code>paste</code>) the elements of vector <code>Tr2</code>. Let’s see what is the result of the first <code>sapply</code> call:</p>
+<pre class="r"><code>TRT.tmp</code></pre>
+<pre><code>## [1] &quot;A1&quot; &quot;A2&quot; &quot;B1&quot; &quot;B2&quot; &quot;C1&quot; &quot;C2&quot;</code></pre>
+<p>Then we do the same process again to include the third level of treatment:</p>
+<pre class="r"><code>TRT</code></pre>
+<pre><code>##  [1] &quot;A1+&quot; &quot;A1-&quot; &quot;A2+&quot; &quot;A2-&quot; &quot;B1+&quot; &quot;B1-&quot; &quot;B2+&quot; &quot;B2-&quot; &quot;C1+&quot; &quot;C1-&quot; &quot;C2+&quot;
+## [12] &quot;C2-&quot;</code></pre>
+<p>Since we are also planning to have a control, so we need an additional line where we add two plots where no treatment will be applied:</p>
+<pre class="r"><code>TRT.Control</code></pre>
+<pre><code>##  [1] &quot;A1+&quot;     &quot;A1-&quot;     &quot;A2+&quot;     &quot;A2-&quot;     &quot;B1+&quot;     &quot;B1-&quot;     &quot;B2+&quot;    
+##  [8] &quot;B2-&quot;     &quot;C1+&quot;     &quot;C1-&quot;     &quot;C2+&quot;     &quot;C2-&quot;     &quot;Control&quot; &quot;Control&quot;</code></pre>
+<p>The vector <code>TRT.Control</code> has now all the elements we need to design our experiment, again with 3 replicates:</p>
+<pre class="r"><code>design.crd(trt=TRT.Control, r=3)$book</code></pre>
+<pre><code>##    plots r TRT.Control
+## 1    101 1         A2-
+## 2    102 1         C2-
+## 3    103 1         C1-
+## 4    104 1         B1-
+## 5    105 1         C1+
+## 6    106 1         C2+
+## 7    107 1         A2+
+## 8    108 1         A1-
+## 9    109 1         B2-
+## 10   110 2         C2-
+## 11   111 2         B2-
+## 12   112 1     Control
+## 13   113 1         A1+
+## 14   114 2     Control
+## 15   115 1         B1+
+## 16   116 2         C1+
+## 17   117 2         A2-
+## 18   118 2         A1+
+## 19   119 3         B2-
+## 20   120 2         B1-
+## 21   121 3     Control
+## 22   122 1         B2+
+## 23   123 2         B2+
+## 24   124 3         A1+
+## 25   125 1     Control
+## 26   126 3         A2-
+## 27   127 2         A2+
+## 28   128 2     Control
+## 29   129 2         B1+
+## 30   130 3         C2-
+## 31   131 2         C2+
+## 32   132 2         C1-
+## 33   133 3         B1-
+## 34   134 3         C1-
+## 35   135 3         B1+
+## 36   136 3     Control
+## 37   137 2         A1-
+## 38   138 3         A2+
+## 39   139 3         C1+
+## 40   140 3         A1-
+## 41   141 3         C2+
+## 42   142 3         B2+</code></pre>
+<hr />
+</div>
+<div id="complete-block-design" class="section level3">
+<h3><strong>Complete block design</strong></h3>
+<p>The exact same approach can be used with all other designs available in the package <code>agricolae</code>:</p>
+<pre class="r"><code>CBD = design.rcbd(trt=TRT.Control, r=3)</code></pre>
+<p>For more complex designs, the function create a sketch that we can print for easier visualisation:</p>
+<pre class="r"><code>print(CBD$sketch)</code></pre>
+<pre><code>##      [,1]  [,2]  [,3]  [,4]      [,5]  [,6]  [,7]  [,8]      [,9] 
+## [1,] &quot;B2+&quot; &quot;C2-&quot; &quot;A2+&quot; &quot;B1+&quot;     &quot;A1+&quot; &quot;B1-&quot; &quot;C1-&quot; &quot;C1+&quot;     &quot;A2-&quot;
+## [2,] &quot;B2-&quot; &quot;C1-&quot; &quot;B2+&quot; &quot;A1-&quot;     &quot;C2+&quot; &quot;A2+&quot; &quot;A2-&quot; &quot;Control&quot; &quot;B1+&quot;
+## [3,] &quot;C2+&quot; &quot;A2+&quot; &quot;B1-&quot; &quot;Control&quot; &quot;C1+&quot; &quot;A1+&quot; &quot;C2-&quot; &quot;B2+&quot;     &quot;B2-&quot;
+##      [,10]     [,11] [,12]     [,13] [,14]    
+## [1,] &quot;Control&quot; &quot;C2+&quot; &quot;B2-&quot;     &quot;A1-&quot; &quot;Control&quot;
+## [2,] &quot;Control&quot; &quot;C1+&quot; &quot;B1-&quot;     &quot;A1+&quot; &quot;C2-&quot;    
+## [3,] &quot;C1-&quot;     &quot;B1+&quot; &quot;Control&quot; &quot;A1-&quot; &quot;A2-&quot;</code></pre>
+<hr />
+</div>
+<div id="incomplete-block-design" class="section level3">
+<h3><strong>Incomplete Block Design</strong></h3>
+<p>Incomplete block designs are useful when our treatment structure is difficult to organise into a balanced design. For example, let’s say we have two treatment levels, and one control:</p>
+<pre class="r"><code>Trt1 = c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;)  
+Trt2 = c(&quot;1&quot;,&quot;2&quot;)  
+
+TRT = as.vector(sapply(Trt1, function(x){paste0(x,Trt2)}))  
+TRT.Control = c(TRT, rep(&quot;Control&quot;, 1)) 
+TRT.Control</code></pre>
+<pre><code>## [1] &quot;A1&quot;      &quot;A2&quot;      &quot;B1&quot;      &quot;B2&quot;      &quot;C1&quot;      &quot;C2&quot;      &quot;Control&quot;</code></pre>
+<p>AS you can see, here we have a total of 7 treatment combinations, which makes it difficult to create a balanced design. Clearly we could include an additional Control and make it a set of 8 treatments. However, there may be cases where this is not possible.</p>
+<p>In such cases we can use the incomplete block design:</p>
+<pre class="r"><code>BIB = design.bib(trt=TRT.Control, r=2, k=7) </code></pre>
+<pre><code>## 
+## Parameters BIB
+## ==============
+## Lambda     : 2
+## treatmeans : 7
+## Block size : 7
+## Blocks     : 2
+## Replication: 2 
+## 
+## Efficiency factor 1 
+## 
+## &lt;&lt;&lt; Book &gt;&gt;&gt;</code></pre>
+<pre class="r"><code>print(BIB$sketch)</code></pre>
+<pre><code>##      [,1]      [,2] [,3] [,4]      [,5] [,6] [,7]
+## [1,] &quot;Control&quot; &quot;A1&quot; &quot;B1&quot; &quot;C1&quot;      &quot;C2&quot; &quot;B2&quot; &quot;A2&quot;
+## [2,] &quot;B2&quot;      &quot;C2&quot; &quot;A1&quot; &quot;Control&quot; &quot;C1&quot; &quot;B1&quot; &quot;A2&quot;</code></pre>
+<hr />
+</div>
+<div id="split-plot-design" class="section level3">
+<h3><strong>Split-Plot Design</strong></h3>
+<p>In some experiments we may have particular treatments, e.g. fertilizers or irrigation regimes, which can only be applied to relatively large areas. While other treatments, e.g. seed variety, are applied to smaller areas. This creates a sort of nested design, which can be better understood by looking at the image below:</p>
+<div class="figure">
+<img src="Images/split_plot_3.JPG" alt="Source: http://blog.minitab.com" />
+<p class="caption">Source: <a href="http://blog.minitab.com" class="uri">http://blog.minitab.com</a></p>
+</div>
+<p>As you can see the area is divided into four whole-plots, with the blue areas being for example irrigated differently compared to the red areas. Then, each whole plot is further divided into sub-plots, where another treatment is applied and randomized.</p>
+<p>In R we can design split-plots with the following line:</p>
+<pre class="r"><code>SpPl = design.split(Trt1, Trt2, r=3, design=c(&quot;crd&quot;)) </code></pre>
+<p>Within the function <code>design.split</code> we can include two treatments, the first for whole-plots and the second for sub-plots. Then we can also include the option <code>design</code>, in which we can select: <code>rcbd</code>, for blocks; <code>crd</code>, for complete random and <code>lsd</code> for latin square (which we will describe below).</p>
+<p>As always, we can look at the design with:</p>
+<pre class="r"><code>SpPl$book</code></pre>
+<pre><code>##    plots splots r Trt1 Trt2
+## 1    101      1 1    A    1
+## 2    101      2 1    A    2
+## 3    102      1 1    C    1
+## 4    102      2 1    C    2
+## 5    103      1 2    A    2
+## 6    103      2 2    A    1
+## 7    104      1 2    C    1
+## 8    104      2 2    C    2
+## 9    105      1 1    B    1
+## 10   105      2 1    B    2
+## 11   106      1 3    A    1
+## 12   106      2 3    A    2
+## 13   107      1 2    B    2
+## 14   107      2 2    B    1
+## 15   108      1 3    B    1
+## 16   108      2 3    B    2
+## 17   109      1 3    C    2
+## 18   109      2 3    C    1</code></pre>
+<hr />
+</div>
+<div id="strip-plot-design" class="section level3">
+<h3><strong>Strip-Plot Design</strong></h3>
+<p>This design is somewhat similar to split-plots. The main difference is that whole-plots and sub-plots are arranged in strips. Let’s look at the image below:</p>
+<div class="figure">
+<img src="Images/plot_02.gif" alt="Source: onlinecourses.science.psu.edu" />
+<p class="caption">Source: onlinecourses.science.psu.edu</p>
+</div>
+<p>As you can see we have three vertical strips, once for each treatment (A1, A2 and A3), and three horizontal strips (for treatments B1, B2 and B3).</p>
+<p>The code for creating strip-plot design sin R is again very simple:</p>
+<pre class="r"><code>Trt1 = c(&quot;A1&quot;,&quot;A2&quot;,&quot;A3&quot;)  
+Trt2 = c(&quot;B1&quot;,&quot;B2&quot;,&quot;B3&quot;) 
+
+StPl = design.strip(Trt1, Trt2, r=3)
+
+StPl$book</code></pre>
+<pre><code>##    plots block Trt1 Trt2
+## 1    101     1   A1   B3
+## 2    102     1   A1   B2
+## 3    103     1   A1   B1
+## 4    104     1   A3   B3
+## 5    105     1   A3   B2
+## 6    106     1   A3   B1
+## 7    107     1   A2   B3
+## 8    108     1   A2   B2
+## 9    109     1   A2   B1
+## 10   201     2   A1   B1
+## 11   202     2   A1   B3
+## 12   203     2   A1   B2
+## 13   204     2   A3   B1
+## 14   205     2   A3   B3
+## 15   206     2   A3   B2
+## 16   207     2   A2   B1
+## 17   208     2   A2   B3
+## 18   209     2   A2   B2
+## 19   301     3   A1   B1
+## 20   302     3   A1   B3
+## 21   303     3   A1   B2
+## 22   304     3   A2   B1
+## 23   305     3   A2   B3
+## 24   306     3   A2   B2
+## 25   307     3   A3   B1
+## 26   308     3   A3   B3
+## 27   309     3   A3   B2</code></pre>
+<hr />
+</div>
+<div id="latin-square-design" class="section level3">
+<h3><strong>Latin Square Design</strong></h3>
+<p>Latin square designs are very popular in animal studies, where we need to limit as much as possible the number of subjects involved. This design allows each subject to receive all treatments, and still allows to reach good experimental power. In <code>agricolae</code>, latin square designs can be created as follows:</p>
+<pre class="r"><code>LS = design.lsd(trt=TRT)
+
+LS$sketch</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6]
+## [1,] &quot;A2&quot; &quot;C2&quot; &quot;A1&quot; &quot;B1&quot; &quot;C1&quot; &quot;B2&quot;
+## [2,] &quot;A1&quot; &quot;C1&quot; &quot;C2&quot; &quot;A2&quot; &quot;B2&quot; &quot;B1&quot;
+## [3,] &quot;B1&quot; &quot;A1&quot; &quot;A2&quot; &quot;B2&quot; &quot;C2&quot; &quot;C1&quot;
+## [4,] &quot;C1&quot; &quot;B1&quot; &quot;B2&quot; &quot;C2&quot; &quot;A2&quot; &quot;A1&quot;
+## [5,] &quot;B2&quot; &quot;A2&quot; &quot;B1&quot; &quot;C1&quot; &quot;A1&quot; &quot;C2&quot;
+## [6,] &quot;C2&quot; &quot;B2&quot; &quot;C1&quot; &quot;A1&quot; &quot;B1&quot; &quot;A2&quot;</code></pre>
+<p>This is a 6x6 latin square.</p>
+<p>Please look at the package description to know what other experimental designs are avilable in <code>agricolae</code>.</p>
+<hr />
+</div>
+</div>
+<div id="t-test" class="section level2">
+<h2><strong>t-test</strong></h2>
+<p>Now that we covered the basics of experimental designs we can start exploring the statistical tests that we can use to detect differences between treatments. The first test we are going to look at is the t-test, which allows us to compare two samples and check whether they are statistically different (i.e. come from two populations). In essence, the t-test does exactly what we described above, takes two samples and computes the probability (<em>p-value</em>) that the null hypothesis is true.</p>
+<p>Let’s see how to perform a t-test in R using the samples we created above:</p>
+<pre class="r"><code>t.test(S1, S3, alternative=&quot;two.sided&quot;, var.equal=T)</code></pre>
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  S1 and S3
+## t = -0.32191, df = 4, p-value = 0.7636
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -4.450354  3.525586
+## sample estimates:
+## mean of x mean of y 
+##  6.336340  6.798724</code></pre>
+<p>The t-test checks the two samples under the hypothesis that they come from two different distributions. As you can see we have specified the alternative hypothesis, <code>two.sided</code>, which means test whether <code>S1</code> and <code>S2</code> come from two populations. The option <code>var.equal</code> is useful in cases where we cannot assume that the two samples have the same variance, by default this is set as <code>TRUE</code>. The test returns several outputs, and what we are mostly interested in is the <em>p-vaue</em>, which tells whether we can reject the null hypothesis.</p>
+<p>The decision of rejecting the null hypothesis is something we can do based on the significance level we want to achieve. Significance level is the <span class="math inline">\(\alpha\)</span> we discussed above, and indicates the probability of rejecting the null hypothesis when it is actually true (false positive). Usually, we consider a statistical test significant only if the <em>p-value</em> is below 0.05, meaning that the chances of getting a false positive are 5%.</p>
+<p>As mentioned before, after properly accounting for sources of error by creating good experimental designs, the only way we have to ensure the statistical test can detect differences between samples is increasing their size. Larger samples have lower standard error of the mean, and therefore are less variable. However, since we are often constrained by space or time, we need to make sure we do not design experiments that are too complex to run. Therefore the sample size needs to be large enough to get robust confidence intervals, but small enough so that we can run the experiment smoothly.</p>
+<hr />
+<div id="sample-size" class="section level3">
+<h3><strong>Sample size</strong></h3>
+<p>For all the reasons explained above, we have now the issue of finding the optimal number of samples that would allow us to detect a difference between our treatments, or be large enough to avoid any false negative errors. The procedure to compute the optimal sample size is referred to as <strong>Power Analysis</strong>.</p>
+<p>Power analysis is based on the concept of <strong>Effect Size</strong> which is defined as the standardized mean differences between groups. In other words, the effect size measures the magnitude of the differences between groups (length of green arrow in ANOVA example image). There are several ways to compute the effect size, but the most common is the following:</p>
+<div class="figure">
+<img src="Images/Eq_ES.png" alt="Source: http://r-video-tutorial.blogspot.co.uk" />
+<p class="caption">Source: <a href="http://r-video-tutorial.blogspot.co.uk" class="uri">http://r-video-tutorial.blogspot.co.uk</a></p>
+</div>
+<p>where <span class="math inline">\(ES\)</span> is the effect size (often referred to as Cohen’s d). In this equation, <span class="math inline">\(\bar{y}_A\)</span> is the mean for treatment <span class="math inline">\(A\)</span>, and <span class="math inline">\(\bar{y}_B\)</span> is the mean for treatment <span class="math inline">\(B\)</span>. The denominator is the pooled standard deviation, which is computed as follows:</p>
+<div class="figure">
+<img src="Images/Sd_Pooled.png" alt="Source: http://r-video-tutorial.blogspot.co.uk" />
+<p class="caption">Source: <a href="http://r-video-tutorial.blogspot.co.uk" class="uri">http://r-video-tutorial.blogspot.co.uk</a></p>
+</div>
+<p>where <span class="math inline">\(SD\)</span> are the standard deviations for treatments <span class="math inline">\(B\)</span> and <span class="math inline">\(A\)</span>, and <span class="math inline">\(n\)</span> is the sample size.</p>
+<p>In R we can easily compute the effect size for <code>S1</code> and <code>S3</code> as follows:</p>
+<pre class="r"><code>numerator = (mean(S3)-mean(S1))
+denominator = sqrt((((length(S3)-1)*sd(S3)^2)+((length(S1)-1)*sd(S1)^2))/(length(S3)+length(S1)-2))
+
+ES = numerator/denominator
+ES</code></pre>
+<pre><code>## [1] 0.2628419</code></pre>
+<p>Cohen’s d is very easy to interpret, because it describes differences between groups based on their standard deviation. An effect size ES equal 1, would imply that the means for the two groups are separated by one full standard deviation; while ES equal 0.5 implies the two values are half a standard deviation away. To better understand this point please look at the image below:</p>
+<div class="figure">
+<img src="Images/effect_size.gif" alt="Effect Size" />
+<p class="caption">Effect Size</p>
+</div>
+<p>The first mean value is 70, the second is 50, their difference is 20. The two distributions have the same standard deviation (assumption of equal variance) of 10. So the two mean values have a distance of 2 standard deviations, meaning an effect size of 2.</p>
+<p>As you remember, samples <code>S1</code> and <code>S3</code> come from two populations that have mean values separated by half a standard deviation. However, since we are simulating only three values the ES may change dramatically between simulations.</p>
+<p>Now that we know the effect size for our sample, we can compute the sample size we would require to have a robust experiment, using the function <code>pwr.t.test</code> in the package <code>pwr</code>: In this function we need to specify several options:</p>
+<ul>
+<li>Effect size, option <code>d</code>: this is what we calculated above so we can just use the object <code>ES</code></li>
+<li>Alpha, option <code>sig.level</code>: here we need to specify the significance level we are happy to consider. Typically a value of 0.05 is accepted, meaning a 5% chances of getting false positive results.</li>
+<li>Beta, option <code>power</code>: here we need to specify the power we want to achieve. Typically a value of 0.8 is accepted, meaning that 80% chances of not getting false negative outcomes.</li>
+<li>Type and alternative depends on the test, in this case we have two samples and we want to test whether they are different.</li>
+</ul>
+<pre class="r"><code>PW.T = pwr.t.test(d = ES, sig.level = 0.05, power = 0.8, type = &quot;two.sample&quot;, alternative = &quot;two.sided&quot;)
+
+PW.T</code></pre>
+<pre><code>## 
+##      Two-sample t test power calculation 
+## 
+##               n = 228.1849
+##               d = 0.2628419
+##       sig.level = 0.05
+##           power = 0.8
+##     alternative = two.sided
+## 
+## NOTE: n is number in *each* group</code></pre>
+<p>Again, results vary each time we run the simulation. However, it is clear that we would need a lot more replicates to have a robust experiment. We can use the sample size <code>n</code> computed above to run a new simulation. We can extract the sample size from the object <code>PW.T</code>, but it nees to be rounded up (example, 24.5 become 25). We can do that with the function ceiling:</p>
+<pre class="r"><code>SampleSize = ceiling(PW.T$n)
+
+SampleSize</code></pre>
+<pre><code>## [1] 229</code></pre>
+<p>Now we can input the sample size into a new simulation and run the t-test again:</p>
+<pre class="r"><code>S4 = rnorm(n=SampleSize, mean=5, sd=2.5)
+S5 = rnorm(n=SampleSize, mean=6.25, sd=2.5)
+
+t.test(S4, S5, alternative=&quot;two.sided&quot;)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  S4 and S5
+## t = -6.0641, df = 454.87, p-value = 2.792e-09
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -1.7969205 -0.9173171
+## sample estimates:
+## mean of x mean of y 
+##  4.974782  6.331901</code></pre>
+<p>Results should now be significant, i.e. <em>p-value</em> below 0.05. However, please remember that around 5% of the times results will still not result significant. This is because we set a significant level at 5%.</p>
+<hr />
+</div>
+<div id="a-priori-calculation" class="section level3">
+<h3><strong><em>A Priori</em> Calculation</strong></h3>
+<p>In the previous example, we computed the effect size based on samples we simulated. However, the large majority of times we do not have access to data we can use to compute the effect size. So the question becomes, how can we compute the number of samples if we do not know the effect size?</p>
+<p>We have two ways of approaching this issue. The first is perform a pilot study, intended as a small scale experiment where we test our treatments. With a pilot study we are not really interested in sample size, we just want to look at average differences between groups.</p>
+<p>The other way is looking at the literature, where it is suggested to use a medium effect size every time we do not have direct measures. A medium effect size corresponds to <code>ES = 0.5</code>.</p>
+<hr />
+</div>
+</div>
+<div id="conclusions" class="section level2">
+<h2><strong>Conclusions</strong></h2>
+<p>In this lecture we introduced some very important concepts that form the basis of inferential statistics. We learned how to design robust experiments and compute the required sample size for t-tests.</p>
+<hr />
+</div>
+<div id="references" class="section level2">
+<h2><strong>References</strong></h2>
+<div id="power-analysis" class="section level3">
+<h3><em>Power Analysis</em></h3>
+<p>Please refer to my blog to learn more about power analysis: <a href="http://r-video-tutorial.blogspot.co.uk/2017/07/power-analysis-and-sample-size.html">Power Analysis</a></p>
+<p>For the large majority of the power analysis I perform, I use the free software <a href="http://www.gpower.hhu.de/">G*Power</a> developed by the University of Düsseldorf. It is simple to use but very effective!</p>
+<p>Additional resources for power analysis are:</p>
+<ul>
+<li>“Statistics Done Wrong” by Alex Reinhart: <a href="https://www.statisticsdonewrong.com/">LINK</a></li>
+<li>“Power Analysis for Experimental Research” by Bausell &amp; Li</li>
+<li>“Statistical Power Analysis for the Behavioral Sciences” by Cohen</li>
+</ul>
+</div>
+<div id="experimental-desings" class="section level3">
+<h3><em>Experimental desings</em></h3>
+<p><a href="https://onlinecourses.science.psu.edu/stat503/node/5">Design of Experiments (Penn State)</a> <a href="http://www.stat.wisc.edu/courses/st572-larget/Spring2007/">Statistical Methods for Bioscience (Wisconsin-Madison)</a></p>
+<hr />
+</div>
+</div>
+<div id="homework" class="section level2">
+<h2><strong>Homework</strong></h2>
+<ol style="list-style-type: decimal">
+<li><p>Using once again the Diet dataset, please perform a t-test that compares the weight loss after 6 weeks between gender. Comment your results.</p></li>
+<li><p>Compute the effect size between genders.</p></li>
+<li><p>Using the <code>pwr.t.test</code> try to perform an <em>post-hoc</em> power analysis. In this case we know the sample size (<span class="math inline">\(n\)</span>) and we need to compute power, so <code>power=NULL</code>.</p></li>
+</ol>
+</div>
+
+<p>Copyright &copy; 2018 Dr. Fabio Veronesi - Creative Commons Attribution 3.0 Unported</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

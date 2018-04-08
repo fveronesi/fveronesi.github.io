@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Dr. Fabio Veronesi" />
+
+
+<title>Lecture 4 - Generalized Linear Models</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Comprehensive R Course on Inferential Statistics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Course Summary</a>
+</li>
+<li>
+  <a href="Lecture1_BasicR.html">Lecture 1</a>
+</li>
+<li>
+  <a href="Lecture2_Experimental_Designs.html">Lecture 2</a>
+</li>
+<li>
+  <a href="Lecture3-Linear_Modelling.html">Lecture 3</a>
+</li>
+<li>
+  <a href="Lecture4-GLM.html">Lecture 4</a>
+</li>
+<li>
+  <a href="Lecture5-Mixed_Effect_Models.html">Lecture 5</a>
+</li>
+<li>
+  <a href="Lecture6-Mixed_Effect_Models.html">Lecture 6</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Lecture 4 - Generalized Linear Models</h1>
+<h4 class="author"><em>Dr. Fabio Veronesi</em></h4>
+<h4 class="date"><em>April 2018</em></h4>
+
+</div>
+
+
+<div id="summary" class="section level2">
+<h2><strong>Summary</strong></h2>
+<ul>
+<li>Introduction</li>
+<li>Non-parametric Tests</li>
+<li>Generalized Linear Models (GLM)
+<ul>
+<li>Count Data</li>
+<li>Binary Outcomes</li>
+<li>Proportions</li>
+</ul></li>
+<li>Power Analysis for GLM</li>
+</ul>
+<hr />
+</div>
+<div id="introduction" class="section level2">
+<h2><strong>Introduction</strong></h2>
+<p>For certain datasets the assumption of normality cannot be met. In such cases we may consider different options: GLM is one of them and it should be a good solution for datasets like counts and presence/absence data (we will look at GLM below). Another option could be to transform the data and “normalize”&quot; them to meet the assumption of normality. However, with transformations we need to be extremely careful because the estimates of the slopes will also be transformed, and so we always need to know how to back-transform our data. The final option would be to use non-parametric tests, which do not assume a normal distribution.</p>
+<hr />
+</div>
+<div id="loading-packages" class="section level2">
+<h2><strong>Loading Packages</strong></h2>
+<pre class="r"><code>library(agridat)
+library(car)
+library(Rfit) 
+library(MASS)
+library(tidyverse)
+library(lsmeans)
+library(lmSupport) 
+library(multcompView)</code></pre>
+<hr />
+</div>
+<div id="non-parametric-tests" class="section level2">
+<h2><strong>Non-parametric Tests</strong></h2>
+<p>The non-parametric alternative for the t-test is the Mann-Whitney Test:</p>
+<pre class="r"><code>S1 = rnorm(n=3, mean=5, sd=2.5)
+S3 = rnorm(n=3, mean=6.25, sd=2.5)
+
+wilcox.test(S1, S3, exact=T)</code></pre>
+<pre><code>## 
+##  Wilcoxon rank sum test
+## 
+## data:  S1 and S3
+## W = 3, p-value = 0.7
+## alternative hypothesis: true location shift is not equal to 0</code></pre>
+<p>For the one-way ANOVA the non-parametric alternative is the Kruskal-Wallis test:</p>
+<pre class="r"><code>kruskal.test(yield ~ nf, data=lasrosas.corn) </code></pre>
+<pre><code>## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  yield by nf
+## Kruskal-Wallis chi-squared = 81.217, df = 5, p-value = 4.669e-16</code></pre>
+<p>For more complex designs we can use the function <code>raov</code> from the package <code>Rfit</code>:</p>
+<pre class="r"><code>raov(yield ~ nf * topo, data=lasrosas.corn)</code></pre>
+<pre><code>## 
+## Robust ANOVA Table
+##         DF          RD    Mean RD         F p-value
+## nf       5   764.56053  152.91211  21.96030 0.00000
+## topo     3 17418.76333 5806.25444 833.85875 0.00000
+## nf:topo 15    59.15213    3.94348   0.56634 0.90215</code></pre>
+<p>Other functions are the <code>friedman.test</code> that can be used for one-way repeated measures ANOVA; moreover, the package <a href="https://cran.r-project.org/web/packages/ez/index.html"><code>ez</code></a> contains functions to perform non-parametric tests for within-subject and between-subject designs.</p>
+<hr />
+</div>
+<div id="glm---count-data" class="section level2">
+<h2><strong>GLM - Count Data</strong></h2>
+<p>As mentioned above, generalized linear models or GLM, can be used in cases of violation of the assumption of normality. These models can work with error distributions that do not fit a normal distribution, so theoretically they could be employed every time we are working with non-normal distributions. However, in order to apply GLM we need to know what distribution to fit to our data. In other words, knowing that the distribution is not normal is not enough, we need to know what other distribution fits our data. This is not the case for non-parametric tests, which only assume non-normality. However, non-parametric tests only allow relatively simple designs, so we need to be careful.</p>
+<p>For some datasets though, knowing the distribution is fairly simple and therefore GLM are the preferred choice. One of these datasets is count data, e.g. number of insects, number of events per hours. These data generally fit a Poisson distribution, which looks similar to the histogram below:</p>
+<div class="figure">
+<img src="Images/Poisson.png" alt="Histogram of Poisson Distribution" />
+<p class="caption">Histogram of Poisson Distribution</p>
+</div>
+<p>The characteristic of the poisson distribution is that it only includes non-negative integers (i.e. whole numbers), and usually the large majority of data are close to zero.</p>
+<p>GLM still solve linear equations, but because of the data distribution they employ a link function to “linearise” the model. In fact, GLM for count data solve the equation below:</p>
+<div id="lny-beta_0-beta_1-x" class="section level3">
+<h3><span class="math inline">\(\ln{(y)} = \beta_0 + \beta_1 x\)</span></h3>
+<p>For testing GLM for counts in R we are going to import another dataset from the package <code>agridat</code>:</p>
+<pre class="r"><code>data(beall.webworms)
+str(beall.webworms)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    1300 obs. of  7 variables:
+##  $ row  : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ col  : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ y    : int  1 0 1 3 6 0 2 2 1 3 ...
+##  $ block: Factor w/ 13 levels &quot;B1&quot;,&quot;B10&quot;,&quot;B11&quot;,..: 1 1 1 1 1 6 6 6 6 6 ...
+##  $ trt  : Factor w/ 4 levels &quot;T1&quot;,&quot;T2&quot;,&quot;T3&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ spray: Factor w/ 2 levels &quot;N&quot;,&quot;Y&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ lead : Factor w/ 2 levels &quot;N&quot;,&quot;Y&quot;: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<p>This dataset represents counts of worms in a beet field, with insecticide treatments.</p>
+<p>The syntax to fit GLM in R is very simple and follows the same formula approach we used for previous models:</p>
+<pre class="r"><code>PoisReg = glm(y ~ trt, data=beall.webworms, family=poisson(link=log)) </code></pre>
+<p>As you can see the main difference between the syntax for the function <code>glm</code> as compared to <code>lm</code> is that here we need to add the options <code>family</code>, which is the family of distributions for our data, and <code>link</code>, which is the link function for this particular model.</p>
+<p>As always we can call the functions <code>Anova</code>…</p>
+<pre class="r"><code>Anova(PoisReg)</code></pre>
+<pre><code>## Analysis of Deviance Table (Type II tests)
+## 
+## Response: y
+##     LR Chisq Df Pr(&gt;Chisq)    
+## trt   235.45  3  &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>and <code>summary</code> to check the details of the model:</p>
+<pre class="r"><code>summary(PoisReg)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ trt, family = poisson(link = log), data = beall.webworms)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.6733  -1.0046  -0.9081   0.6141   4.2771  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  0.33647    0.04688   7.177 7.12e-13 ***
+## trtT2       -1.02043    0.09108 -11.204  &lt; 2e-16 ***
+## trtT3       -0.49628    0.07621  -6.512 7.41e-11 ***
+## trtT4       -1.22246    0.09829 -12.438  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 1955.9  on 1299  degrees of freedom
+## Residual deviance: 1720.4  on 1296  degrees of freedom
+## AIC: 3125.5
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<p>As for the other models we tested above, <code>Anova</code> provides a <em>p-value</em> for the whole treatment, while <code>summary</code> provides <em>p-values</em> for individual contrasts, computed with a <a href="http://www.blackwellpublishing.com/specialarticles/jcn_10_774.pdf">Wald test</a>. In this dataset, treatment has 4 levels (<code>T1</code>, <code>T2</code>, <code>T3</code> and <code>T4</code>). as you can see in the summary table, level <code>T1</code> is not shown. This is called the reference level and all the <em>p-values</em> are computed based on the comparison between them and the reference level. For example, the <em>p-value</em> for <code>T2</code> is referred to the contrast between <code>T1</code> and <code>T2</code>.</p>
+<p>In case we need to compute <em>p-values</em> for other contrasts we can simply change the order within the variable <code>trt</code>:</p>
+<pre class="r"><code>beall.webworms$trt = relevel(beall.webworms$trt, &quot;T4&quot;)</code></pre>
+<p>Now we have changed the reference level to <code>T4</code>, so that if we run the model again we can check <em>p-values</em> for direct comparisons with <code>T4</code>:</p>
+<pre class="r"><code>PoisReg = glm(y ~ trt, data=beall.webworms, family=poisson(link=log))
+
+summary(PoisReg)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ trt, family = poisson(link = log), data = beall.webworms)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.6733  -1.0046  -0.9081   0.6141   4.2771  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -0.88599    0.08639 -10.256  &lt; 2e-16 ***
+## trtT1        1.22246    0.09829  12.438  &lt; 2e-16 ***
+## trtT2        0.20203    0.11645   1.735   0.0828 .  
+## trtT3        0.72618    0.10523   6.901 5.16e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 1955.9  on 1299  degrees of freedom
+## Residual deviance: 1720.4  on 1296  degrees of freedom
+## AIC: 3125.5
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<p>As you can see, the <em>p-values</em> are different. For example, the <em>p-value</em> for <code>T2</code> is now not significant. This means that the difference between <code>T2</code> and <code>T4</code> is not significant.</p>
+</div>
+<div id="checking-assumption" class="section level3">
+<h3><strong>Checking Assumption</strong></h3>
+<p>We can again use the function plot to produce diagnostic plots:</p>
+<pre class="r"><code>par(mfrow=c(1,2))  
+plot(PoisReg, which=c(1:2)) </code></pre>
+<p><img src="Lecture4-GLM_files/figure-html/unnamed-chunk-11-1.png" width="960" /></p>
+<p>The interpretation is the same as for <code>lm</code>. The left plot should indicate a straight line crossing zero, and a constant spread of points. The right QQplot should present quantiles on a straight line. In this case it seems our model could be better particularly in terms of normality of the residuals.</p>
+</div>
+<div id="interpretation" class="section level3">
+<h3><strong>Interpretation</strong></h3>
+<p>To interpret the coefficients of the model we need to remember that this GLM uses a log link function. Therefore for example the -1.02 is log transformed, so the coefficient for <code>T2</code> would be <code>exp(-1.02) = 0.36</code>. In terms of interpretation, we can say that the number of worms for <code>T2</code> is 0.36 times the number of worms for <code>T1</code> (this is because the coefficient is always referred to the reference level). So there is a decrease, and that is why the coefficient is negative.</p>
+<p>More info here: <a href="https://stats.stackexchange.com/questions/234057/interpretation-of-slope-estimate-of-poisson-regression">stats.stackexchange.com</a></p>
+<p>As we saw for ANCOVA, we can obtain estimated marginal means using the following line, we just need to add the option to compute the back-transformed mean values:</p>
+<pre class="r"><code>lsmeans(PoisReg, specs=c(&quot;trt&quot;), adjust=&quot;tukey&quot;, contr=&quot;cld&quot;, type=&quot;response&quot;)</code></pre>
+<pre><code>##  trt      rate         SE df asymp.LCL asymp.UCL .group
+##  T4  0.4123077 0.03561796 NA 0.3480878 0.4883757  1    
+##  T2  0.5046154 0.03940384 NA 0.4330049 0.5880688  1    
+##  T3  0.8523077 0.05121021 NA 0.7576222 0.9588268   2   
+##  T1  1.4000000 0.06563301 NA 1.2770947 1.5347335    3  
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale 
+## P value adjustment: tukey method for comparing a family of 4 estimates 
+## Tests are performed on the log scale 
+## significance level used: alpha = 0.05</code></pre>
+<p>Once again, this function can be plotted:</p>
+<pre class="r"><code>lsmeans(PoisReg, specs=c(&quot;trt&quot;), adjust=&quot;tukey&quot;, contr=&quot;cld&quot;, type=&quot;response&quot;) %&gt;%
+  plot</code></pre>
+<p><img src="Lecture4-GLM_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="overdispersion" class="section level3">
+<h3><strong>Overdispersion</strong></h3>
+<p>In some cases count data can be overdispersed, meaning that the variance of the distribution is higher that what we would expect in case of a poisson distribution. In such cases we need to change the error distribution in the model.</p>
+<p>To assess the overdispersion we can compute both variance and mean:</p>
+<pre class="r"><code>mean(beall.webworms$y); var(beall.webworms$y)</code></pre>
+<pre><code>## [1] 0.7923077</code></pre>
+<pre><code>## [1] 1.290164</code></pre>
+<p>As you can see they are slightly different. If these data followed a perfect poisson distribution, these two values would be almost identical. The fact that the variance is larger than the mean implies a certain degree of overdispersion, which we can account using the “quasi-poisson” distribution:</p>
+<pre class="r"><code>QuasPois.Reg = glm(y ~ trt, data=beall.webworms, family=quasipoisson(link=log))
+
+summary(QuasPois.Reg)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ trt, family = quasipoisson(link = log), data = beall.webworms)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.6733  -1.0046  -0.9081   0.6141   4.2771  
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -0.8860     0.1005  -8.812  &lt; 2e-16 ***
+## trtT1         1.2225     0.1144  10.686  &lt; 2e-16 ***
+## trtT2         0.2020     0.1355   1.491    0.136    
+## trtT3         0.7262     0.1225   5.929  3.9e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for quasipoisson family taken to be 1.35472)
+## 
+##     Null deviance: 1955.9  on 1299  degrees of freedom
+## Residual deviance: 1720.4  on 1296  degrees of freedom
+## AIC: NA
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<p>There are cases though were the variance is much larger the the mean, and a quasi-poisson would not be appropriate. In such cases we need to resort to using a “negative binomial” distribution of the error term (using a function from the package <code>MASS</code>):</p>
+<pre class="r"><code>NegBin.Reg = glm.nb(y ~ trt, data=beall.webworms) 
+
+summary(NegBin.Reg)</code></pre>
+<pre><code>## 
+## Call:
+## glm.nb(formula = y ~ trt, data = beall.webworms, init.theta = 2.004130573, 
+##     link = log)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.4572  -0.9488  -0.8660   0.5340   2.7698  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -0.88599    0.09486  -9.340  &lt; 2e-16 ***
+## trtT1        1.22246    0.11283  10.834  &lt; 2e-16 ***
+## trtT2        0.20203    0.12896   1.567    0.117    
+## trtT3        0.72618    0.11893   6.106 1.02e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for Negative Binomial(2.0041) family taken to be 1)
+## 
+##     Null deviance: 1442.7  on 1299  degrees of freedom
+## Residual deviance: 1275.3  on 1296  degrees of freedom
+## AIC: 3053
+## 
+## Number of Fisher Scoring iterations: 1
+## 
+## 
+##               Theta:  2.004 
+##           Std. Err.:  0.325 
+## 
+##  2 x log-likelihood:  -3042.969</code></pre>
+<hr />
+</div>
+</div>
+<div id="glm---presenceabsence" class="section level2">
+<h2><strong>GLM - Presence/Absence</strong></h2>
+<p>Another popular form of regression that can be tackled with GLM is the logistic regression, where the variable of interest is binary (0 or 1, presence or absence, and any other binary outcome). In this case the regression model takes the following equation:</p>
+<div id="lnleftfracpy1-pyright-beta_0-beta_1-x" class="section level3">
+<h3><span class="math inline">\(\ln\left(\frac{p(y)}{1-p(y)}\right) = \beta_0 + \beta_1 x\)</span></h3>
+<p>The equation is identical to the standard linear model, but what we are computing here is the log of the probability that one of the two outcomes will occur, also referred as logit function.</p>
+<p>For this example we are loading the dataset <code>johnson.blight</code>, again available in <code>agridat</code>. Here the binary variable of interest is the presence or absence of blight (either 0 or 1) in potatoes:</p>
+<pre class="r"><code>data(johnson.blight)
+
+str(johnson.blight)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    25 obs. of  6 variables:
+##  $ year    : int  1970 1971 1972 1973 1974 1975 1976 1977 1978 1979 ...
+##  $ area    : int  0 0 0 0 50 810 120 40 0 0 ...
+##  $ blight  : int  0 0 0 0 1 1 1 1 0 0 ...
+##  $ rain.am : int  8 9 9 6 16 10 12 10 11 8 ...
+##  $ rain.ja : int  1 4 6 1 6 7 12 4 10 9 ...
+##  $ precip.m: num  5.84 6.86 47.29 8.89 7.37 ...</code></pre>
+<p>The syntax to fit a logistic regression model is very similar to what we used above:</p>
+<pre class="r"><code>LogReg = glm(blight ~ rain.am, data=johnson.blight, family=binomial(link=logit))  </code></pre>
+<p>Once again we can call <code>Anova</code>…</p>
+<pre class="r"><code>Anova(LogReg)</code></pre>
+<pre><code>## Analysis of Deviance Table (Type II tests)
+## 
+## Response: blight
+##         LR Chisq Df Pr(&gt;Chisq)   
+## rain.am   9.8353  1   0.001712 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>…and <code>summary</code> to get the details:</p>
+<pre class="r"><code>summary(LogReg)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = blight ~ rain.am, family = binomial(link = logit), 
+##     data = johnson.blight)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.9395  -0.6605  -0.3517   1.0228   1.6048  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)  -4.9854     2.0720  -2.406   0.0161 *
+## rain.am       0.4467     0.1860   2.402   0.0163 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 34.617  on 24  degrees of freedom
+## Residual deviance: 24.782  on 23  degrees of freedom
+## AIC: 28.782
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<p>The <em>p-values</em> can be interpreted as we described above.</p>
+</div>
+<div id="interpretation-1" class="section level3">
+<h3><strong>Interpretation</strong></h3>
+<p>The interpretation of estimates for a logistic regression model are a bit more complex than what we saw for count data. In fact, here we are dealing with a logit transformation and to compute the probabilities we need to solve the following:</p>
+</div>
+<div id="py1-fracexpbeta_0-beta_1-x1-expbeta_0-beta_1-x" class="section level3">
+<h3><span class="math inline">\(p(y=1) = \frac{\exp(\beta_0 + \beta_1 x)}{1 + \exp(\beta_0 + \beta_1 x)}\)</span></h3>
+<p>here <span class="math inline">\(\beta_0\)</span> is the value of the intercept (-4.9854), and <span class="math inline">\(\beta_1\)</span> is the value of the slope for <code>rain.am</code> (0.4467).</p>
+<p>Let’s say for example that we need to compute probabilities of blight if rainfall is 10 mm, we need to solve the equation above using the estimates from the model.</p>
+<pre class="r"><code>exp(-4.9854 + 0.4467 * 10)/(1 + exp(-4.9854 + 0.4467 * 10))</code></pre>
+<pre><code>## [1] 0.3732264</code></pre>
+<p>Therefore the probability of blight for rain of 10 mm is 37%. If we need to compute the rate of change, i.e. changes in probabilities for each unit change in rain, we need to use a linear approximation, as suggested by Agresti <a href="https://www.wiley.com/en-us/An+Introduction+to+Categorical+Data+Analysis%2C+2nd+Edition-p-9780471226185">(2007)</a>:</p>
+<div class="figure">
+<img src="Images/LogisticLinearApproximation.png" alt="Linear Approximation" />
+<p class="caption">Linear Approximation</p>
+</div>
+<p>where <span class="math inline">\(\beta\)</span> is the coefficient for rain (0.4467) and <span class="math inline">\(\pi\)</span> is the probability we just calculated.</p>
+<p>The code to solve that is:</p>
+<pre class="r"><code>0.4467 * 0.37 * (1 - 0.37)</code></pre>
+<pre><code>## [1] 0.1041258</code></pre>
+<p>So for each 1 mm of rain the increase in probability is around 10% (allowing for differences due to the linear approximation).</p>
+<p>Now that we know how to compute probabilities by hand, you will be happy to know that we can do all this using the function <code>predict</code> and avoid manual computations. For example, to compute the probability for <code>rain.am</code> equal 10 we can simply run:</p>
+<pre class="r"><code>predict(LogReg, newdata=data.frame(rain.am=10), type=&quot;response&quot;)</code></pre>
+<pre><code>##         1 
+## 0.3732829</code></pre>
+<p>here <code>newdata</code> is used to tell the model which new dataset to use for prediction, and <code>type=&quot;response&quot;</code> is the option to use to get probabilities.</p>
+<p>If we want to know the rate of change we can simply predict two values separated by one:</p>
+<pre class="r"><code>predict(LogReg, newdata=data.frame(rain.am=c(10,11)), type=&quot;response&quot;)</code></pre>
+<pre><code>##         1         2 
+## 0.3732829 0.4821493</code></pre>
+<p>As you can see the rate of change is around 10% (for this part of the curve).</p>
+<hr />
+</div>
+</div>
+<div id="glm---proportion" class="section level2">
+<h2><strong>GLM - Proportion</strong></h2>
+<p>Proportions can also be analysed with GLM. For this example we can use the dataset <code>crowder.seeds</code>, where the variable <code>germ</code> is the number of seeds that germinated, while <code>n</code> is the total number of seeds:</p>
+<pre class="r"><code>data(crowder.seeds)
+
+str(crowder.seeds)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    21 obs. of  5 variables:
+##  $ plate  : Factor w/ 21 levels &quot;P1&quot;,&quot;P10&quot;,&quot;P11&quot;,..: 1 12 15 16 17 18 19 20 21 2 ...
+##  $ gen    : Factor w/ 2 levels &quot;O73&quot;,&quot;O75&quot;: 2 2 2 2 2 1 1 1 1 1 ...
+##  $ extract: Factor w/ 2 levels &quot;bean&quot;,&quot;cucumber&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ germ   : int  10 23 23 26 17 8 10 8 23 0 ...
+##  $ n      : int  39 62 81 51 39 16 30 28 45 4 ...</code></pre>
+<p>The model is the following:</p>
+<pre class="r"><code>PropMod = glm(cbind(germ, n) ~ gen + extract, data=crowder.seeds, family=&quot;binomial&quot;) </code></pre>
+<p>here we are using the function <code>cbind</code> to compute proportions for the number of seeds that germinated in relation to the total number of seeds. The interpretation of the model is the same as above, with <code>Anova</code>:</p>
+<pre class="r"><code>Anova(PropMod)</code></pre>
+<pre><code>## Analysis of Deviance Table (Type II tests)
+## 
+## Response: cbind(germ, n)
+##         LR Chisq Df Pr(&gt;Chisq)    
+## gen       0.7439  1     0.3884    
+## extract  18.3500  1  1.838e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>and <code>summary</code>:</p>
+<pre class="r"><code>summary(PropMod)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = cbind(germ, n) ~ gen + extract, family = &quot;binomial&quot;, 
+##     data = crowder.seeds)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.5431  -0.5006  -0.1852   0.3968   1.4796  
+## 
+## Coefficients:
+##                 Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)      -1.0594     0.1326  -7.989 1.37e-15 ***
+## genO75            0.1128     0.1311   0.860     0.39    
+## extractcucumber   0.5232     0.1233   4.242 2.22e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 33.870  on 20  degrees of freedom
+## Residual deviance: 14.678  on 18  degrees of freedom
+## AIC: 104.65
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>again we can use the function <code>predict</code> to compute proportions for particular variables of the predictors.</p>
+<p>We can also once again use the following line to perform a multiple comparison. By including the option <code>type=&quot;response&quot;</code> the values that are returned are the different proportions:</p>
+<pre class="r"><code>lsmeans(PropMod, specs=c(&quot;extract&quot;), adjust=&quot;tukey&quot;, contr=&quot;cld&quot;, type=&quot;response&quot;)</code></pre>
+<pre><code>##  extract       prob         SE df asymp.LCL asymp.UCL .group
+##  bean     0.2683568 0.01957861 NA 0.2317568 0.3084163  1    
+##  cucumber 0.3823148 0.01921926 NA 0.3454166 0.4206218   2   
+## 
+## Results are averaged over the levels of: gen 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the logit scale 
+## Tests are performed on the log odds ratio scale 
+## significance level used: alpha = 0.05</code></pre>
+<hr />
+</div>
+<div id="power-analysis-for-glm" class="section level2">
+<h2><strong>Power Analysis for GLM</strong></h2>
+<p>To better explain power analysis for GLM we are going to start by fitting a more complex Poisson model than before:</p>
+<pre class="r"><code>PoisReg = glm(y ~ block + spray*lead, family = poisson(link = log), data = beall.webworms)</code></pre>
+<p>Computing power for this model implies calculating its effect size, which can be done by computing the partial Eta Square as follows:</p>
+<div id="eta2_p-fracdev_treatmentdev_treatment-dev_residual" class="section level4">
+<h4><span class="math inline">\(\eta^2_p = \frac{Dev_{treatment}}{Dev_{treatment} + Dev_{residual}}\)</span></h4>
+<p>we can obtain these values by computing the type III deviance table with the function <code>Anova</code>:</p>
+<pre class="r"><code>Anova(PoisReg, type=3)</code></pre>
+<pre><code>## Analysis of Deviance Table (Type III tests)
+## 
+## Response: y
+##            LR Chisq Df Pr(&gt;Chisq)    
+## block       122.040 12  &lt; 2.2e-16 ***
+## spray       142.349  1  &lt; 2.2e-16 ***
+## lead         43.721  1  3.787e-11 ***
+## spray:lead    4.452  1    0.03485 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The numerator of the equation above can be taken directly from this table. For example, if we want to compute the effect size for <code>lead</code> we would use 43.721 as <span class="math inline">\(Dev_{treatment}\)</span>. For the denominator we need to obtain the residual deviance:</p>
+<pre class="r"><code>anova(PoisReg)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model: poisson, link: log
+## 
+## Response: y
+## 
+## Terms added sequentially (first to last)
+## 
+## 
+##            Df Deviance Resid. Df Resid. Dev
+## NULL                        1299     1955.9
+## block      12  122.040      1287     1833.8
+## spray       1  188.707      1286     1645.2
+## lead        1   42.294      1285     1602.8
+## spray:lead  1    4.452      1284     1598.4</code></pre>
+<p>from this output we can see that the residual deviance is 1598.4. So now we can compute the partial Eta Squared:</p>
+<pre class="r"><code>pEta2 = 43.721 / (43.721 + 1598.4)
+
+pEta2</code></pre>
+<pre><code>## [1] 0.02662471</code></pre>
+<p>Now that we have the specific effect size we can use the function <code>modelPower</code> within the package <code>lmSupport</code>. Here we need to specify <code>pc</code> which are the degrees of freedom of all terms except the element of interest. In this case we know ho to compute it because we just need to look at the ANOVA table above. If we exclude <code>lead</code> the degrees of freedom are 12+1+1. Another parameter we need to include is <code>pc</code>, which includes all degrees of freedom, including the element of interest, so basically: 12+1+1+1. Finally, to perform a <em>post-hoc</em> test we also need to include the number of samples <code>N</code>. The function will return the estimated power:</p>
+<pre class="r"><code>modelPower(pc=12+1+1, pa=12+1+1+1, N=nrow(beall.webworms), alpha=0.05, peta2=pEta2)</code></pre>
+<pre><code>## Results from Power Analysis
+## 
+## pEta2 = 0.027
+## pa =     15 
+## pc =     14 
+## alpha = 0.050 
+## 
+## N = 1300.000 
+## power = 1.000</code></pre>
+<p>For an <em>a-priori</em> power analysis we still need to specify both <code>pa</code> and <code>pc</code>. For example, let’s say we have an experiment with two treatments (the first with 4 levels, the second with 2) and we are also including a continuous explanatory variable. Let’s assume we want to design an experiment powered to detect the interaction between the two treatments. In this case the degrees of freedom for the model without the interaction will be: <span class="math inline">\(pa = (4-1)+(2-1)+1 = 5\)</span>; the degrees of freedom for the full model, which includes the interaction would be: <span class="math inline">\(pc = (4-1)+(2-1)+1+[(4-1)+(2-1)] = 8\)</span>. The last element we need to include is the medium effect size:</p>
+<pre class="r"><code>modelPower(pc=5, pa=8, alpha=0.05, f2=0.15, power=0.8)</code></pre>
+<pre><code>## Results from Power Analysis
+## 
+## f2 =    0.150
+## pa =     8 
+## pc =     5 
+## alpha = 0.050 
+## 
+## N = 80.706 
+## power = 0.800</code></pre>
+<p>The function returns directly the total number of samples N, which is 81.</p>
+<hr />
+</div>
+</div>
+<div id="conclusions" class="section level2">
+<h2><strong>Conclusions</strong></h2>
+<p>In this lecture we looked at methods to deal with data that do not follow a normal distribution.</p>
+<hr />
+</div>
+<div id="references" class="section level2">
+<h2><strong>References</strong></h2>
+<p>Please look at my Blog for additional functions that were not covered in the lecture:</p>
+<ul>
+<li><a href="http://r-video-tutorial.blogspot.co.uk/2017/07/generalized-linear-models-and-mixed.html">GLM - Fabio Veronesi</a></li>
+</ul>
+</div>
+
+<p>Copyright &copy; 2018 Dr. Fabio Veronesi - Creative Commons Attribution 3.0 Unported</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

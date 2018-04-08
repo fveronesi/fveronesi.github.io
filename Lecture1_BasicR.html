@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Dr. Fabio Veronesi" />
+
+
+<title>Lecture 1 - Basic R</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Comprehensive R Course on Inferential Statistics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Course Summary</a>
+</li>
+<li>
+  <a href="Lecture1_BasicR.html">Lecture 1</a>
+</li>
+<li>
+  <a href="Lecture2_Experimental_Designs.html">Lecture 2</a>
+</li>
+<li>
+  <a href="Lecture3-Linear_Modelling.html">Lecture 3</a>
+</li>
+<li>
+  <a href="Lecture4-GLM.html">Lecture 4</a>
+</li>
+<li>
+  <a href="Lecture5-Mixed_Effect_Models.html">Lecture 5</a>
+</li>
+<li>
+  <a href="Lecture6-Mixed_Effect_Models.html">Lecture 6</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Lecture 1 - Basic R</h1>
+<h4 class="author"><em>Dr. Fabio Veronesi</em></h4>
+<h4 class="date"><em>April 2018</em></h4>
+
+</div>
+
+
+<div id="summary" class="section level2">
+<h2><strong>Summary</strong></h2>
+<ul>
+<li>Introduction</li>
+<li>Data Structures</li>
+<li>Data types</li>
+<li>Subsetting</li>
+<li>Importing Data</li>
+<li>Descriptive Statistics</li>
+<li>Plotting</li>
+</ul>
+<hr />
+<div id="note" class="section level4">
+<h4><em>NOTE</em></h4>
+<p>This document has been written using R Markdown. More info on R Markdown syntax at:</p>
+<p><a href="https://help.github.com/articles/basic-writing-and-formatting-syntax">basic-writing-and-formatting-syntax</a></p>
+<p><a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet#lists">Markdown-Here-Cheatsheet</a></p>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf">rmarkdown-cheatsheet</a></p>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">rmarkdown-reference</a></p>
+<hr />
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2><strong>Introduction</strong></h2>
+<p>R is a powerful object-oriented programming language, specifically designed for statistics. Object-oriented means that we can assign data to named objects and use them for computations.</p>
+<p>It is free and open-source and can be downloaded for free at: <a href="https://cran.r-project.org/">CRAN</a></p>
+<p>I also suggest to download R Studio, which makes writing code much easier: <a href="https://www.rstudio.com/">R-Studio</a></p>
+<hr />
+</div>
+<div id="data-structures" class="section level2">
+<h2><strong>Data Structures</strong></h2>
+<p>More info on data structures here: <a href="http://venus.ifca.unican.es/Rintro/dataStruct.html">venus.ifca.unican.es</a></p>
+<p>The most important data structures are vector, matrix, data.frame and lists (array is not used much) <img src="https://github.com/fveronesi/AdvancedResearchMethods/raw/Images/dataStructuresNew.png" alt="Source: venus.ifca.unican.es" /></p>
+<div id="vectors" class="section level3">
+<h3><strong>Vectors</strong></h3>
+<p>Vectors are simply 1D arrays of any type, e.g. numerical, categorical or strings.</p>
+<pre class="r"><code>A = rnorm(n=20, mean=4, sd=1)
+
+A</code></pre>
+<pre><code>##  [1] 6.047778 4.741457 3.975694 3.075114 3.765888 5.100923 5.085127
+##  [8] 3.408311 4.540496 4.054240 4.124017 4.089556 4.355143 4.546544
+## [15] 3.547939 2.769724 4.477357 4.495496 3.112502 5.062341</code></pre>
+<p>A is a vector with 40 elements. We created this vector by using the function <code>rnorm</code>, which randomly samples <code>n = 20</code> numerical values from a normal distribution (<code>mean = 4, sd = 1</code>)</p>
+<pre class="r"><code>length(A)</code></pre>
+<pre><code>## [1] 20</code></pre>
+<p>We can obtain the length, i.e. the number of elements, in the vector using the function <code>length</code>. <code>A</code> is an object, specifically a 1D array also referred to as <code>vector</code> in R, and it can be used as such for analysis:</p>
+<pre class="r"><code>B = A + 3
+
+B</code></pre>
+<pre><code>##  [1] 9.047778 7.741457 6.975694 6.075114 6.765888 8.100923 8.085127
+##  [8] 6.408311 7.540496 7.054240 7.124017 7.089556 7.355143 7.546544
+## [15] 6.547939 5.769724 7.477357 7.495496 6.112502 8.062341</code></pre>
+<p>This expression adds the number 3 to each element of the <code>vector</code>, and stores this new <code>vector</code> into an object named <code>B</code>.</p>
+</div>
+<div id="matrix" class="section level3">
+<h3><strong>Matrix</strong></h3>
+<p>Data can also be stored into more complex objects, like <code>matrix</code> and <code>data.frame</code>:</p>
+<pre class="r"><code>M = matrix(1:40, nrow=8, ncol=5)</code></pre>
+<p>This line creates a 8x5 <code>matrix</code>, which is a 2D object with a total of 40 elements.</p>
+<p>We can look at it using the function <code>print</code>:</p>
+<pre class="r"><code>print(M)</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    1    9   17   25   33
+## [2,]    2   10   18   26   34
+## [3,]    3   11   19   27   35
+## [4,]    4   12   20   28   36
+## [5,]    5   13   21   29   37
+## [6,]    6   14   22   30   38
+## [7,]    7   15   23   31   39
+## [8,]    8   16   24   32   40</code></pre>
+<p>Please notice the way R fills the matrix. It does so by column. We can change that using the option <code>byrow</code>:</p>
+<pre class="r"><code>M = matrix(1:40, nrow=8, ncol=5, byrow=T)
+print(M)</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    1    2    3    4    5
+## [2,]    6    7    8    9   10
+## [3,]   11   12   13   14   15
+## [4,]   16   17   18   19   20
+## [5,]   21   22   23   24   25
+## [6,]   26   27   28   29   30
+## [7,]   31   32   33   34   35
+## [8,]   36   37   38   39   40</code></pre>
+<p>The function <code>help</code> can be very useful when we are not familiar with options available:</p>
+<pre class="r"><code>help(matrix)</code></pre>
+</div>
+<div id="data.frame" class="section level3">
+<h3><strong>Data.Frame</strong></h3>
+<p>Other important objects are <code>data.frame</code>:</p>
+<pre class="r"><code>head(iris)</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<p><code>iris</code> is one of the numerous datasets freely available in R that we can use for testing. The function <code>head</code> allows us to just look at the first few rows of the dataset.</p>
+<p>As you can see this object has multiple columns and many rows, but the entries are not only <code>numeric</code>.</p>
+<pre class="r"><code>str(iris)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    150 obs. of  5 variables:
+##  $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+##  $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+##  $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+##  $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+##  $ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<p>The function <code>str</code> allows us to visualize the structure of any object, and it is particularly useful for <code>data.frame</code>. It tells us that this dataset has 150 observations (rows) and 5 variables (columns). It also tell us that the first 4 variables are numerical (<code>num</code>), while the last is categorical (or factorial).</p>
+<p>Other types of variables could be logical (e.g. <code>TRUE</code> or <code>FALSE</code>), or strings (e.g. “TEST”)</p>
+</div>
+<div id="list" class="section level3">
+<h3><strong>List</strong></h3>
+<p>The last data structure we are going to look at is <code>list</code>. This structure allows to store diverse data types:</p>
+<pre class="r"><code>L = list(A, M)
+print(L)</code></pre>
+<pre><code>## [[1]]
+##  [1] 6.047778 4.741457 3.975694 3.075114 3.765888 5.100923 5.085127
+##  [8] 3.408311 4.540496 4.054240 4.124017 4.089556 4.355143 4.546544
+## [15] 3.547939 2.769724 4.477357 4.495496 3.112502 5.062341
+## 
+## [[2]]
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    1    2    3    4    5
+## [2,]    6    7    8    9   10
+## [3,]   11   12   13   14   15
+## [4,]   16   17   18   19   20
+## [5,]   21   22   23   24   25
+## [6,]   26   27   28   29   30
+## [7,]   31   32   33   34   35
+## [8,]   36   37   38   39   40</code></pre>
+<p>This list has two elements, the first is a <code>vector</code> while the second is a <code>matrix</code>.</p>
+<hr />
+</div>
+</div>
+<div id="subsetting" class="section level2">
+<h2><strong>Subsetting</strong></h2>
+<p>We can use square brackets to extract elements from all data structures. However, the syntax changes between objects.</p>
+<p><code>Vector</code> are 1D arrays so we can extract elements just by specifying the position along the <code>vector</code> we want to extract, starting from 1 up to <code>length(vector)</code>:</p>
+<pre class="r"><code>A[1]</code></pre>
+<pre><code>## [1] 6.047778</code></pre>
+<p>This extracts the first element of the <code>vector</code>.</p>
+<pre class="r"><code>A[length(A)]</code></pre>
+<pre><code>## [1] 5.062341</code></pre>
+<p>This extracts the last element, in position equal to <code>length(A)</code>, which is 40.</p>
+<p>For <code>matrix</code> and <code>data.frame</code>, since these are 2D objects, we need to specify both a row and a column to extract:</p>
+<pre class="r"><code>M[3,5]</code></pre>
+<pre><code>## [1] 15</code></pre>
+<pre class="r"><code>iris[4,4]</code></pre>
+<pre><code>## [1] 0.2</code></pre>
+<p>We can also extract multiple elements:</p>
+<pre class="r"><code>iris[1:4, 2]</code></pre>
+<pre><code>## [1] 3.5 3.0 3.2 3.1</code></pre>
+<p>This line extracts from row 1 to row 4, but only elements in column 2.</p>
+<p>We can also extract entire rows or columns. For example:</p>
+<pre class="r"><code>M[1,]</code></pre>
+<pre><code>## [1] 1 2 3 4 5</code></pre>
+<p>extracts the whole row 1. While:</p>
+<pre class="r"><code>M[,3]</code></pre>
+<pre><code>## [1]  3  8 13 18 23 28 33 38</code></pre>
+<p>extracts the whole column 3.</p>
+<p>In a <code>data.frame</code> we can also extract columns by name:</p>
+<pre class="r"><code>iris$Sepal.Length</code></pre>
+<pre><code>##   [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9 5.4 4.8 4.8 4.3 5.8 5.7 5.4
+##  [18] 5.1 5.7 5.1 5.4 5.1 4.6 5.1 4.8 5.0 5.0 5.2 5.2 4.7 4.8 5.4 5.2 5.5
+##  [35] 4.9 5.0 5.5 4.9 4.4 5.1 5.0 4.5 4.4 5.0 5.1 4.8 5.1 4.6 5.3 5.0 7.0
+##  [52] 6.4 6.9 5.5 6.5 5.7 6.3 4.9 6.6 5.2 5.0 5.9 6.0 6.1 5.6 6.7 5.6 5.8
+##  [69] 6.2 5.6 5.9 6.1 6.3 6.1 6.4 6.6 6.8 6.7 6.0 5.7 5.5 5.5 5.8 6.0 5.4
+##  [86] 6.0 6.7 6.3 5.6 5.5 5.5 6.1 5.8 5.0 5.6 5.7 5.7 6.2 5.1 5.7 6.3 5.8
+## [103] 7.1 6.3 6.5 7.6 4.9 7.3 6.7 7.2 6.5 6.4 6.8 5.7 5.8 6.4 6.5 7.7 7.7
+## [120] 6.0 6.9 5.6 7.7 6.3 6.7 7.2 6.2 6.1 6.4 7.2 7.4 7.9 6.4 6.3 6.1 7.7
+## [137] 6.3 6.4 6.0 6.9 6.7 6.9 5.8 6.8 6.7 6.7 6.3 6.5 6.2 5.9</code></pre>
+<p>For lists, since these are complex objects, we have two levels of extraction:</p>
+<pre class="r"><code>L[[1]]</code></pre>
+<pre><code>##  [1] 6.047778 4.741457 3.975694 3.075114 3.765888 5.100923 5.085127
+##  [8] 3.408311 4.540496 4.054240 4.124017 4.089556 4.355143 4.546544
+## [15] 3.547939 2.769724 4.477357 4.495496 3.112502 5.062341</code></pre>
+<p>The first levels, identified by 2 square brackets, extracts the element of the list (in this case element 1, which is a vector). Then we can extract a particular element from the vector adding an additional level:</p>
+<pre class="r"><code>L[[1]][1]</code></pre>
+<pre><code>## [1] 6.047778</code></pre>
+<p>The same would be true for the second element, which is a <code>data.frame</code>:</p>
+<pre class="r"><code>L[[2]][3,5]</code></pre>
+<pre><code>## [1] 15</code></pre>
+<p>In this case, since the second element has both rows and columns, the second level of extraction needs to include two numbers.</p>
+<hr />
+</div>
+<div id="importing-data" class="section level2">
+<h2><strong>Importing Data</strong></h2>
+<p>In this course we will use data freely available on-line, which can be downloaded from: <a href="https://www.sheffield.ac.uk/mash/statistics2/data">sheffield.ac.uk</a>. A short description for each dataset is also available.</p>
+<p>In case we have data stored locally, we first need to specify our working directory so that R knows where to load and save data. We can do that via the function <code>setwd</code>:</p>
+<pre class="r"><code>setwd(&quot;J:/Teaching_Harper/Advanced Research Methods - E7004/Possible Datasets&quot;)</code></pre>
+<p>Please notice the forward slash (<code>/</code>) instead of the back slash we would normally use. Another way is go to Session-&gt;Set Working Directory directly in R Studio. Now we can import our data. The easiest way to import tables is from csv files.</p>
+<p>This can also be done directly from the website:</p>
+<pre class="r"><code>Crimes = read.csv(&quot;https://www.sheffield.ac.uk/polopoly_fs/1.569434!/file/stcp-Rdataset-Crime.csv&quot;)
+
+str(Crimes)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    47 obs. of  27 variables:
+##  $ ï..CrimeRate       : num  45.5 52.3 56.6 60.3 64.2 67.6 70.5 73.2 75 78.1 ...
+##  $ Youth              : int  135 140 157 139 126 128 130 143 141 133 ...
+##  $ Southern           : int  0 0 1 1 0 0 0 0 0 0 ...
+##  $ Education          : num  12.4 10.9 11.2 11.9 12.2 13.5 14.1 12.9 12.9 11.4 ...
+##  $ ExpenditureYear0   : int  69 55 47 46 106 67 63 66 56 51 ...
+##  $ LabourForce        : int  540 535 512 480 599 624 641 537 523 599 ...
+##  $ Males              : int  965 1045 962 968 989 972 984 977 968 1024 ...
+##  $ MoreMales          : int  0 1 0 0 0 0 0 0 0 1 ...
+##  $ StateSize          : int  6 6 22 19 40 28 14 10 4 7 ...
+##  $ YouthUnemployment  : int  80 135 97 135 78 77 70 114 107 99 ...
+##  $ MatureUnemployment : int  22 40 34 53 25 25 21 35 37 27 ...
+##  $ HighYouthUnemploy  : int  1 1 0 0 1 1 1 1 0 1 ...
+##  $ Wage               : int  564 453 288 457 593 507 486 487 489 425 ...
+##  $ BelowWage          : int  139 200 276 249 171 206 196 166 170 225 ...
+##  $ CrimeRate10        : num  26.5 35.9 37.1 42.7 46.7 47.9 50.6 55.9 61.8 65.4 ...
+##  $ Youth10            : int  135 135 153 139 125 128 153 143 153 134 ...
+##  $ Education10        : num  12.5 10.9 11 11.8 12.2 13.8 14.1 13 12.9 11.2 ...
+##  $ ExpenditureYear10  : int  71 54 44 41 97 60 57 63 54 47 ...
+##  $ LabourForce10      : int  564 540 529 497 602 621 641 549 538 600 ...
+##  $ Males10            : int  974 1039 959 983 989 983 993 973 968 1024 ...
+##  $ MoreMales10        : int  0 1 0 0 0 0 0 0 0 1 ...
+##  $ StateSize10        : int  6 7 24 20 42 28 14 11 5 7 ...
+##  $ YouthUnemploy10    : int  82 138 98 131 79 81 71 119 110 97 ...
+##  $ MatureUnemploy10   : int  20 39 33 50 24 24 23 36 36 28 ...
+##  $ HighYouthUnemploy10: int  1 1 0 0 1 1 1 1 1 1 ...
+##  $ Wage10             : int  632 521 359 510 660 571 556 561 550 499 ...
+##  $ BelowWage10        : int  142 210 256 235 162 199 176 168 126 215 ...</code></pre>
+<p>Please notice the name of the first variable <code>ï..CrimeRate</code>. This sometimes happens in R, which probably has some issues with this particular file. It is important to notice this, because we always need to use accurate variable names in R, otherwise the script will not work. We can find the description of the dataset at this link: <a href="https://www.sheffield.ac.uk/polopoly_fs/1.547014!/file/Crime_data_summary.docx">Crime_data_summary</a></p>
+<p>Even though reading csv is the easiest way to import data, there are many other formats of data that can be imported into R (e.g. Excel sheet). To find out more on how to import different formats of data please look at the links below:</p>
+<p><a href="https://www.statmethods.net/input/importingdata.html">Quick-R</a></p>
+<p><a href="https://www.datacamp.com/community/tutorials/r-data-import-tutorial">DataCamp</a></p>
+<hr />
+</div>
+<div id="descriptive-statistics" class="section level2">
+<h2><strong>Descriptive Statistics</strong></h2>
+<p>Descriptive statistics is a basic technique that is used to describe a dataset.<br />
+This technique relies on indexes to capture important features of the dataset, such as mean and standard deviation, which will help us to compare it with other data.</p>
+<div id="centrality" class="section level3">
+<h3><strong>Centrality</strong></h3>
+<p>The most popular index of centrality is the mean, or arithmetic average:</p>
+</div>
+<div id="displaystylebary-frac1n-times-sum_i1n-y_i" class="section level3">
+<h3><span class="math inline">\(\displaystyle\bar{y} = \frac{1}{n} \times \sum_{i=1}^{n} y_i\)</span></h3>
+<p>where <span class="math inline">\(\bar{y}\)</span> is the mean of a variable <span class="math inline">\(y\)</span>, and <span class="math inline">\(n\)</span> is the number of elements in <span class="math inline">\(y\)</span>.</p>
+<hr />
+<div id="note-1" class="section level4">
+<h4><em>Note</em></h4>
+<p>The previous equation was written using the Latex syntax. More info here: <a href="https://en.wikibooks.org/wiki/LaTeX/Mathematics#Powers_and_indices">Latex Equation Reference</a></p>
+<hr />
+<p>The function <code>mean</code> can be used in R to compute the arithmetic average:</p>
+<pre class="r"><code>mean(Crimes$ï..CrimeRate)</code></pre>
+<pre><code>## [1] 102.8085</code></pre>
+<p>Another useful measure of centrality is the median, which is defined as the middle value of a series of numbers, listed in numerical order. We can simply compute it using the function <code>median</code> in R:</p>
+<pre class="r"><code>median(Crimes$ï..CrimeRate)</code></pre>
+<pre><code>## [1] 103</code></pre>
+</div>
+</div>
+<div id="spread" class="section level3">
+<h3><strong>Spread</strong></h3>
+<p>The Variance is a measure of spread and indicates the average amount of dispersion, i.e. distance from the mean, of each value in a dataset. It can be simply computed as follows:</p>
+<div id="displaystyle-s2-frac1n-1-times-sum_i1n-y_i---bary2" class="section level4">
+<h4><span class="math inline">\(\displaystyle s^2 = \frac{1}{n-1} \times \sum_{i=1}^{n} {(y_i - \bar{y})}^2\)</span></h4>
+<p>By definition, the variance is sum of the square differences between each observation <span class="math inline">\(y_i\)</span> and the mean <span class="math inline">\(\bar{y}\)</span>, divided by the number of observations minus 1.</p>
+<p>In R, the variance can be simply computed as follows:</p>
+<pre class="r"><code>var(Crimes$ï..CrimeRate)</code></pre>
+<pre><code>## [1] 834.8208</code></pre>
+<p>The Standard Deviation (<span class="math inline">\(s\)</span>) is the square root of the variance:</p>
+<pre class="r"><code>sd(Crimes$ï..CrimeRate)</code></pre>
+<pre><code>## [1] 28.89327</code></pre>
+</div>
+</div>
+<div id="summary-1" class="section level3">
+<h3><strong>Summary</strong></h3>
+<p>Sometimes, instead of computing indexes for a single variable we are more interested in looking at the whole dataset at once. We can do that with the function <code>summary</code>:</p>
+<pre class="r"><code>summary(Crimes)</code></pre>
+<pre><code>##   ï..CrimeRate       Youth          Southern        Education    
+##  Min.   : 45.5   Min.   :119.0   Min.   :0.0000   Min.   :10.00  
+##  1st Qu.: 82.7   1st Qu.:130.0   1st Qu.:0.0000   1st Qu.:11.55  
+##  Median :103.0   Median :136.0   Median :0.0000   Median :12.40  
+##  Mean   :102.8   Mean   :138.6   Mean   :0.3404   Mean   :12.39  
+##  3rd Qu.:120.7   3rd Qu.:146.0   3rd Qu.:1.0000   3rd Qu.:13.20  
+##  Max.   :161.8   Max.   :177.0   Max.   :1.0000   Max.   :15.10  
+##  ExpenditureYear0  LabourForce        Males          MoreMales     
+##  Min.   : 45.0    Min.   :480.0   Min.   : 934.0   Min.   :0.0000  
+##  1st Qu.: 62.5    1st Qu.:530.5   1st Qu.: 964.5   1st Qu.:0.0000  
+##  Median : 78.0    Median :560.0   Median : 977.0   Median :0.0000  
+##  Mean   : 85.0    Mean   :561.2   Mean   : 983.0   Mean   :0.1915  
+##  3rd Qu.:104.5    3rd Qu.:593.0   3rd Qu.: 992.0   3rd Qu.:0.0000  
+##  Max.   :166.0    Max.   :641.0   Max.   :1071.0   Max.   :1.0000  
+##    StateSize      YouthUnemployment MatureUnemployment HighYouthUnemploy
+##  Min.   :  3.00   Min.   : 70.00    Min.   :20.00      Min.   :0.0000   
+##  1st Qu.: 10.00   1st Qu.: 80.50    1st Qu.:27.50      1st Qu.:0.0000   
+##  Median : 25.00   Median : 92.00    Median :34.00      Median :0.0000   
+##  Mean   : 36.62   Mean   : 95.47    Mean   :33.98      Mean   :0.3191   
+##  3rd Qu.: 41.50   3rd Qu.:104.00    3rd Qu.:38.50      3rd Qu.:1.0000   
+##  Max.   :168.00   Max.   :142.00    Max.   :58.00      Max.   :1.0000   
+##       Wage         BelowWage      CrimeRate10        Youth10     
+##  Min.   :288.0   Min.   :126.0   Min.   : 26.50   Min.   :120.0  
+##  1st Qu.:459.5   1st Qu.:165.5   1st Qu.: 76.35   1st Qu.:134.0  
+##  Median :537.0   Median :176.0   Median :103.50   Median :139.0  
+##  Mean   :525.4   Mean   :194.0   Mean   :102.07   Mean   :140.5  
+##  3rd Qu.:591.5   3rd Qu.:227.5   3rd Qu.:130.25   3rd Qu.:151.5  
+##  Max.   :689.0   Max.   :276.0   Max.   :178.20   Max.   :164.0  
+##   Education10    ExpenditureYear10 LabourForce10      Males10      
+##  Min.   :10.10   Min.   : 41.00    Min.   :497.0   Min.   : 935.0  
+##  1st Qu.:11.55   1st Qu.: 58.50    1st Qu.:538.0   1st Qu.: 969.5  
+##  Median :12.40   Median : 73.00    Median :563.0   Median : 983.0  
+##  Mean   :12.40   Mean   : 80.23    Mean   :565.5   Mean   : 986.9  
+##  3rd Qu.:13.25   3rd Qu.: 97.00    3rd Qu.:599.0   3rd Qu.: 994.0  
+##  Max.   :15.20   Max.   :157.00    Max.   :641.0   Max.   :1079.0  
+##   MoreMales10      StateSize10    YouthUnemploy10  MatureUnemploy10
+##  Min.   :0.0000   Min.   :  3.0   Min.   : 71.00   Min.   :15.00   
+##  1st Qu.:0.0000   1st Qu.: 11.0   1st Qu.: 82.00   1st Qu.:28.00   
+##  Median :0.0000   Median : 25.0   Median : 93.00   Median :34.00   
+##  Mean   :0.2128   Mean   : 37.7   Mean   : 97.45   Mean   :33.36   
+##  3rd Qu.:0.0000   3rd Qu.: 43.0   3rd Qu.:108.50   3rd Qu.:39.00   
+##  Max.   :1.0000   Max.   :180.0   Max.   :143.00   Max.   :59.00   
+##  HighYouthUnemploy10     Wage10       BelowWage10   
+##  Min.   :0.0000      Min.   :359.0   Min.   :126.0  
+##  1st Qu.:0.0000      1st Qu.:530.0   1st Qu.:165.0  
+##  Median :0.0000      Median :615.0   Median :182.0  
+##  Mean   :0.4043      Mean   :594.6   Mean   :193.0  
+##  3rd Qu.:1.0000      3rd Qu.:659.5   3rd Qu.:229.5  
+##  Max.   :1.0000      Max.   :748.0   Max.   :257.0</code></pre>
+<p>This function returns several important information for all the variables in the <code>data.frame</code> <code>Crimes</code>. Beside mean and median, it also reports the minimum and maximum values, and the first and third quartiles, which are useful to understand the shape of the distribution.</p>
+</div>
+<div id="quantiles" class="section level3">
+<h3><strong>Quantiles</strong></h3>
+<p>Quantiles are just cut points that divide the probability distribution into equal probability intervals:</p>
+<div class="figure">
+<img src="https://github.com/fveronesi/AdvancedResearchMethods/raw/Images/78th_percentile2.png" alt="Source: mathspace.co" />
+<p class="caption">Source: mathspace.co</p>
+</div>
+<p>In this example, the <span class="math inline">\(78^{th}\)</span> percentile is the point below which <span class="math inline">\(78%\)</span> of observations lie. Important for statistics is the division of the distribution into four parts, in this case we talk about quartiles. These are important because they allow to measure spread for non-normal distribution: using the distance between first and third quartiles (interquartile range):</p>
+<div class="figure">
+<img src="https://github.com/fveronesi/AdvancedResearchMethods/raw/Images/598px-Boxplot_vs_PDF.svg.png" alt="Source: wikipedia" />
+<p class="caption">Source: wikipedia</p>
+</div>
+<p>The interquartile range can be easily computed in R with the function <code>IQR</code>:</p>
+<pre class="r"><code>IQR(Crimes$ï..CrimeRate)</code></pre>
+<pre><code>## [1] 37.95</code></pre>
+<hr />
+</div>
+</div>
+<div id="plotting" class="section level2">
+<h2><strong>Plotting</strong></h2>
+<p>The final part of this lecture is dedicated to plotting. Plots are extremely important because they allow us to graphically represent our data, which is extremely important.</p>
+<p>There are many useful plots that we will use throughout the course. In particular we will look at histograms and box-plots, which allows us to visualise and compare distributions; bar-charts, which are useful to develop hypothesis particularly for categorical data; and scatterplots, which are very useful to understand the relation between variables.</p>
+<div id="histograms" class="section level3">
+<h3><strong>Histograms</strong></h3>
+<p>Histograms are plots designed to represent distributions. To create a histogram we simply need to divide our data into non-overlapping “bins”, meaning small intervals, which will be plotted on the X axis. Then we count the number of values that fall into each bin, and this number is plotted on the Y axis.</p>
+<p>Let’s look at an example, again using the <code>ï..CrimeRate</code> variable:</p>
+<pre class="r"><code>hist(Crimes$ï..CrimeRate)</code></pre>
+<p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<p>As you can see the histogram has split the data into 7 bins, and plot the frequency (i.e. the number of values within each bin) on the Y axis.</p>
+<p>We can add elements to this plots by changing title and the label for the X axis, with the options <code>main</code> and <code>xlab</code>:</p>
+<pre class="r"><code>hist(Crimes$ï..CrimeRate, main=&quot;Histogram Crime Rates&quot;, xlab=&quot;Crime rate (number of offences per million population)&quot;)</code></pre>
+<p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<p>As mentioned, histograms are very useful to check the shape of the distribution. For example, in this case we can see that the distribution is very close to normal, with its typical bell shape. This is extremely useful particularly when we will start looking at statistical tests. In fact, many tests are specifically designed to deal only with normally distributed data.</p>
+</div>
+<div id="bar-charts" class="section level3">
+<h3><strong>Bar Charts</strong></h3>
+<p>Bar charts are very useful when we need to compare groups. In the dataset Crimes there are variables that are binary, i.e. either 0 or 1. For example, <code>Southern</code> divides crimes reported in Southern (1) and Northern (0) states. Let’s say we want to compare average crimes in both areas. For this task bar charts are the right tools.</p>
+<p>Before we can plot the data we need to compute averages for both categories in the variable <code>Southern</code>. We can do it with the function <code>tapply</code>:</p>
+<pre class="r"><code>Mean = tapply(X=Crimes$ï..CrimeRate, INDEX=Crimes$Southern, FUN=mean)
+Mean</code></pre>
+<pre><code>##        0        1 
+## 103.9065 100.6813</code></pre>
+<p>The function <code>tapply</code>, applies a function (<code>FUN</code>) to a continuous variable (<code>X</code>), divided by groups (<code>INDEX</code>). Once we have the mean we can plot bars using <code>barplot</code>:</p>
+<pre class="r"><code>barplot(Mean, names.arg=c(&quot;Northern States&quot;, &quot;Southern States&quot;))</code></pre>
+<p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p>It seems Northern states have slightly more crimes.</p>
+<p>We can provide more details on the plot by creating error bars, for example using the standard error of the mean. The standard error is computed as follows:</p>
+</div>
+<div id="displaystyle-sem-fracssqrtn" class="section level3">
+<h3><span class="math inline">\(\displaystyle SEM = \frac{s}{\sqrt{n}}\)</span></h3>
+<p>where <span class="math inline">\(s\)</span> is the standard deviation, and <span class="math inline">\(n\)</span> is the number of samples.</p>
+<p>In base R there is no function to compute the standard error, but we can create one:</p>
+<pre class="r"><code>SEM = function(x){sd(x) / sqrt(length(x))}</code></pre>
+<p>This simple function will accept a vector <code>x</code>, as only input. Then it will compute the standard error as a ratio between the standard deviation (<code>sd</code>), and the square root (<code>sqrt</code>) of the number of elements (<code>length</code>) of the vector <code>x</code>. Now that we have a function we can again use <code>tapply</code>, to compute standard errors for each category:</p>
+<pre class="r"><code>SEM.STATES = tapply(X=Crimes$ï..CrimeRate, INDEX=Crimes$Southern, FUN=SEM)
+SEM.STATES</code></pre>
+<pre><code>##        0        1 
+## 5.739746 5.647058</code></pre>
+<p>These can be added to the plot with <code>segments</code> and <code>arrows</code>. However, we first need to recall the plot and save it into an object:</p>
+<pre class="r"><code>BC_PLOT = barplot(Mean, names.arg=c(&quot;Northern States&quot;, &quot;Southern States&quot;), ylim=c(0,120))</code></pre>
+<p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p>The object <code>BC_PLOT</code> now contains the plot, and in particular the coordinates of the two bars. We also added the option <code>ylim</code>, to manually set the range of the Y axis. This way we can make sure the error bars are fully visible.</p>
+<pre class="r"><code>BC_PLOT</code></pre>
+<pre><code>##      [,1]
+## [1,]  0.7
+## [2,]  1.9</code></pre>
+<p>With these numbers we can specify where to insert the error bars, as twice the standard error of the mean:</p>
+<pre class="r"><code>BC_PLOT = barplot(Mean, names.arg=c(&quot;Northern States&quot;, &quot;Southern States&quot;), ylim=c(0,120))
+
+segments(x0=BC_PLOT, y0=Mean - (2*SEM.STATES), x1=BC_PLOT, y1=Mean + (2*SEM.STATES), lwd=1.5)
+
+arrows(x0=BC_PLOT, y0=Mean - (2*SEM.STATES), x1=BC_PLOT, y1=Mean + (2*SEM.STATES), lwd=1.5, angle=90, code=3, length=0.05)</code></pre>
+<p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p>To know more about the code in the last two functions please refer to: <a href="https://www.r-bloggers.com/building-barplots-with-error-bars/">www.r-bloggers.com/building-barplots-with-error-bars/</a></p>
+<p>Plotting confidence intervals around the mean is extremely useful since it may provide good indications of statistical differences between groups. In fact, SEM is used in inferential statistics to compare groups. If two error bars are overlapping there are good chances that with a formal test the two groups will not result statistically different. This is something we can use to formulate our hypothesis before applying any statistical test.</p>
+</div>
+<div id="scatterplot" class="section level3">
+<h3><strong>Scatterplot</strong></h3>
+<p>Scatterplots allows us to visualise the relation between two continuous variables. For example, let’s say we want to visualise the relation between Crime rate and Wages, we can do that simply by:</p>
+<pre class="r"><code>plot(ï..CrimeRate ~ Wage10, data=Crimes, pch=20, xlab=&quot;Median Weekly Wage&quot;, ylab=&quot;Crime rate&quot;)</code></pre>
+<p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<p>It seems there is a positive correlation between the two, i.e. when one increases the other also increases. This sort of plots is extremely useful in hypothesis testing, since it allows us to immediately figure out that some variables may be driving the variance we see in our target variable, in this case Crime rates.</p>
+</div>
+<div id="box-plots" class="section level3">
+<h3><strong>Box-Plots</strong></h3>
+<p>Box-Plots are another way to represent distributions, this time using quartiles. They are also very useful to compare distributions.</p>
+<p>First of all, let’s look at the R code to generate box-plots:</p>
+<pre class="r"><code>boxplot(Crimes$ï..CrimeRate, main=&quot;Histogram Crime Rates&quot;, xlab=&quot;Crime rate (number of offences per million population)&quot;)</code></pre>
+<p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<p>Box-plots are a clever way of representing distributions. They feature a box, which ranges from the first (<code>Q1</code>) to the third quartile (<code>Q3</code>), thus representing the interquartile range (measure of spread valid also for non-normal distributions). Inside there is a black line that corresponds to the median. Then we have the two whiskers, which extend up to a distance of 1.5 times the interquartile range below <code>Q1</code> and above <code>Q3</code>. Outside this range we sometimes see dots that are considered outliers.</p>
+<p>The image below illustrates how to interpret box-plots:</p>
+<div class="figure">
+<img src="https://github.com/fveronesi/AdvancedResearchMethods/raw/Images/1435.png" alt="Source: lsc.studysixsigma.com" />
+<p class="caption">Source: lsc.studysixsigma.com</p>
+</div>
+<p>We can increase the amount of information displayed by adding a red dot on the mean value. This can be done with the function <code>points</code>:</p>
+<pre class="r"><code>boxplot(Crimes$ï..CrimeRate, main=&quot;Histogram Crime Rates&quot;, xlab=&quot;Crime rate (number of offences per million population)&quot;)
+points(mean(Crimes$ï..CrimeRate), pch=16, col=&quot;red&quot;)</code></pre>
+<p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<p>As you can see the function <code>points</code> is written after the call to create the plot. Moreover, within the call to <code>points</code> we have two more options: <code>pch</code> and <code>col</code>. The first, <code>pch</code>, is used to change the symbol used for the dot and it can be any of the symbols below:</p>
+<div class="figure">
+<img src="https://github.com/fveronesi/AdvancedResearchMethods/raw/Images/pch.png" alt="pch symbols, source: isu.r-forge.r-project.org" />
+<p class="caption">pch symbols, source: isu.r-forge.r-project.org</p>
+</div>
+<p>The option <code>col</code> is used to change the colour of the symbol, which by default is black. We can either write the colour: e.g. red, green, yellow. Alternatively, we can select more advanced colours from the range below:</p>
+<div class="figure">
+<img src="https://github.com/fveronesi/AdvancedResearchMethods/raw/Images/ColorsChart3.jpg" alt="Author: Earl F. Glynn (2005)" />
+<p class="caption">Author: Earl F. Glynn (2005)</p>
+</div>
+<p>Box plots are a very good way of comparing distributions of different groups. We can do that including a formula, for example specifying that we want to plot distributions of Crime Rate as a function of Youth unemployment:</p>
+<pre class="r"><code>boxplot(Crimes$ï..CrimeRate  ~ Crimes$HighYouthUnemploy, main=&quot;Histogram Crime Rates&quot;, xlab=&quot;Crime rate (number of offences per million population)&quot;)</code></pre>
+<p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
+<p>Box plots can be used with any distribution. However, their role become very important when we are dealing with non-normal data. In fact, with normal distributions we can simply use a bar-chart to plot the mean values of each group, and an error bar with the confidence interval (computed as twice the standard error of the mean). However, for data that do not fit a normal distribution this is not possible and this is where box plot become very useful. In fact, using the interquartile range (<code>IQR</code>) we can compute confidence intervals around the median, with the following equation:</p>
+<div id="ci_median-median-pm-1.57-times-fraciqrsqrtn" class="section level4">
+<h4><span class="math inline">\(CI_{Median} = Median \pm 1.57 \times \frac{IQR}{\sqrt{n}}\)</span></h4>
+<p>Confidence intervals around the median can be plotted in R as notches, with the option <code>notch</code>:</p>
+<pre class="r"><code>boxplot(Crimes$ï..CrimeRate  ~ Crimes$HighYouthUnemploy, notch=T, main=&quot;Histogram Crime Rates&quot;, xlab=&quot;Crime rate (number of offences per million population)&quot;)</code></pre>
+<p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
+<p>The interpretation is very similar to the confidence intervals around the mean. If the two notches are overlapping there are good chances that with a formal test the two groups will not result statistically different.</p>
+<hr />
+</div>
+</div>
+</div>
+<div id="conclusions" class="section level2">
+<h2><strong>Conclusions</strong></h2>
+<p>In this lecture we learned the basics of the R language, such as importing and subsetting data. We also started learning useful technique to explore our dataset, both in terms of descriptive indexes, and by visualising our variables.</p>
+<hr />
+</div>
+<div id="references" class="section level2">
+<h2><strong>References</strong></h2>
+<p>Material to implement what we discussed during lectures can be downloaded from my OneDrive.</p>
+<p>I also developed a video tutorial for Pack Publishing, which again students can download from OneDrive:</p>
+<p><a href="https://liveharperac-my.sharepoint.com/:f:/g/personal/00754140_harper-adams_ac_uk/ElEdqXsw35BFm0aX4rUQnvMBTEyQGdVOXLkwhNx5irsjsw">OneDrive</a></p>
+<hr />
+</div>
+<div id="homework" class="section level2">
+<h2><strong>Homework</strong></h2>
+<p>Homework are meant to help you during the learning process. They will not be marked and they are not mandatory. However, if you have time and you want to do some additional work to better understand the R language these are some things you can try. Please save all your homework, from each day, into a single file: name_surname_StudentID.R</p>
+<p>Please identify each day with specific comments. A comment in R can be included with the hash-tag (#):</p>
+<pre><code>#Comment: you can write whatever neccesary for me to understand your reasoning</code></pre>
+<p>At the end of the module you can send the R file to me: <a href="mailto:fveronesi@harper-adams.ac.uk">fveronesi@harper-adams.ac.uk</a></p>
+<p>You can find the list of homework below:</p>
+<ol style="list-style-type: decimal">
+<li><p>From this <a href="https://www.sheffield.ac.uk/mash/statistics2/data">page</a>, download the Diet dataset and place it in a folder of your choice. Then set the working directory pointing to the same folder where you downloaded the dataset. Finally load the dataset using <code>read.csv</code>.</p></li>
+<li><p>Subset the dataset by gender (be careful for the NA values) and compute the mean values for the variable <code>weight6weeks</code> for both subsets.</p></li>
+<li><p>Create a bar-chart using the two subsets.</p></li>
+<li><p>Create a scatterplot between <code>pre.weight</code> and <code>weight6weeks</code>.</p></li>
+<li><p>Comment the scatterplot and the relation between variables.</p></li>
+</ol>
+</div>
+
+<p>Copyright &copy; 2018 Dr. Fabio Veronesi - Creative Commons Attribution 3.0 Unported</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
