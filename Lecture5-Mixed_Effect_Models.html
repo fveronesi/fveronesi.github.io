@@ -217,18 +217,23 @@ $(document).ready(function () {
 
 </div>
 
-
-<div id="summary" class="section level2">
-<h2><strong>Summary</strong></h2>
+<div id="TOC">
 <ul>
-<li>Introduction</li>
-<li>Theoretical Background for mixed effect models</li>
-<li>Fitting LME in R</li>
-<li>Selection of optimal random effect</li>
-<li>Model interpretation</li>
+<li><a href="#introduction"><strong>Introduction</strong></a></li>
+<li><a href="#introduction-to-mixed-effects-models"><strong>Introduction to mixed effects models</strong></a><ul>
+<li><a href="#simulating-additional-sources-of-variation"><strong>Simulating additional sources of variation</strong></a></li>
+<li><a href="#type-of-mixed-effect-models"><strong>Type of Mixed Effect Models</strong></a></li>
+</ul></li>
+<li><a href="#fitting-lme-in-r"><strong>Fitting LME in R</strong></a></li>
+<li><a href="#finding-the-optimal-model"><strong>Finding the optimal model</strong></a></li>
+<li><a href="#syntax-for-package-lme4"><strong>Syntax for Package lme4</strong></a></li>
+<li><a href="#interpreting-results"><strong>Interpreting Results</strong></a></li>
+<li><a href="#checking-assumptions"><strong>Checking Assumptions</strong></a></li>
+<li><a href="#generalized-linear-mixed-effect-models"><strong>Generalized Linear Mixed Effect Models</strong></a></li>
 </ul>
-<hr />
 </div>
+
+<hr />
 <div id="introduction" class="section level2">
 <h2><strong>Introduction</strong></h2>
 <p>For this lecture we would need to install and load several packages:</p>
@@ -286,8 +291,8 @@ library(lmerTest)</code></pre>
 </ul>
 <p>In some cases, there are adaptations of linear modelling that can be used to analyse data that violate the assumption of independence. For example, there are established ways to analyse latin square and split plot designs. However, there are cases where we cannot fully control the design of the experiment and therefore these adapted methods cannot be used. In such cases our only option is to use mixed effect models.</p>
 <p>In simple terms, mixed effect are models that can account for additional sources of random variation. Linear models are based on the following equation:</p>
-<div id="y-beta_0-beta_1-x-epsilon" class="section level3">
-<h3><span class="math inline">\(y = \beta_0 + \beta_1 x + \epsilon\)</span></h3>
+<div id="y-beta_0-beta_1-x-epsilon" class="section level4">
+<h4><span class="math inline">\(y = \beta_0 + \beta_1 x + \epsilon\)</span></h4>
 <p>For simplicity this model only includes one explanatory variable <span class="math inline">\(x\)</span>. This model will fit a line with one intercept <span class="math inline">\(\beta_0\)</span> and one slope <span class="math inline">\(\beta_1\)</span> through the data. This equation can be divided into two components: fixed and random effects. For fixed effect we refer to those variables we are using to explain the model, such as our treatments. The other component in the equation is the random effect, represented by <span class="math inline">\(\epsilon\)</span>, which provides a level of uncertainty that it is difficult to account for in the model. For example, in agriculture we may see local differences between plants, even when treated the same way and grown on the same soil, caused by genetic differences. This is the error of the model, which cannot be minimized with our treatments.</p>
 <p>For mixed effect models we have additional sources of random error, which are not accounted for in the treatment structure, but for which we have some data (for example we know that certain observations come from the same field or herd or farm). It may happen that data treated the same way but coming from different fields will have similar mean differences between treated and untreated (for example, the control is always 20% less than treated plants), but different mean values (for example if one field could be less fertile). If we include all data into the same set we would artificially increase the variance, and this in the model may mask the effect of treatments.</p>
 </div>
@@ -302,13 +307,13 @@ C.F1 = rnorm(n=13, mean=24, sd=5)</code></pre>
 ##  Welch Two Sample t-test
 ## 
 ## data:  T.F1 and C.F1
-## t = 2.3212, df = 23.6, p-value = 0.02925
+## t = 3.8125, df = 22.129, p-value = 0.0009441
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.5565777 9.5582177
+##   3.238766 10.959583
 ## sample estimates:
 ## mean of x mean of y 
-##  29.70345  24.64605</code></pre>
+##  32.34225  25.24307</code></pre>
 <p>The <em>p-value</em> should be significant (please be aware that values change every time we run the simulation, so your results may look different). Let’s now simulate data coming from another field:</p>
 <pre class="r"><code>T.F2 = rnorm(n=13, mean=50, sd=20)
 C.F2 = rnorm(n=13, mean=40, sd=20)</code></pre>
@@ -322,13 +327,13 @@ t.test(T, C)</code></pre>
 ##  Welch Two Sample t-test
 ## 
 ## data:  T and C
-## t = 1.0173, df = 48.779, p-value = 0.314
+## t = 2.8151, df = 49.008, p-value = 0.007004
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -4.718723 14.392769
+##   4.125823 24.711996
 ## sample estimates:
 ## mean of x mean of y 
-##  38.09620  33.25918</code></pre>
+##  41.69459  27.27568</code></pre>
 <p>Now there are good chances that the <em>p-value</em> of this second test will not be significant, since the power of this experiment is low. However, it may happen that you obtain significant results since it is a simulation and values are drawn randomly from normal distributions.</p>
 <p>The power of this experiment is low simply because including data from the second field inflate the variance within groups, and this masks the effect of treatment.</p>
 </div>
@@ -336,9 +341,8 @@ t.test(T, C)</code></pre>
 <h3><strong>Type of Mixed Effect Models</strong></h3>
 <p>Essentially, mixed effect models do not fit one single line to the entire dataset, but allow fitting of different lines (with either different intercepts, or different intercepts and slopes) to different part of the dataset.</p>
 <p>In such cases the model changes to account for additional error terms:</p>
-</div>
-<div id="y-beta_0-beta_1-x-mu-epsilon" class="section level3">
-<h3><span class="math inline">\(y = \beta_0 + \beta_1 x + \mu + \epsilon\)</span></h3>
+<div id="y-beta_0-beta_1-x-mu-epsilon" class="section level4">
+<h4><span class="math inline">\(y = \beta_0 + \beta_1 x + \mu + \epsilon\)</span></h4>
 <p>The equation above represents a random intercept model, where <span class="math inline">\(u\)</span> is additional error component. In essence, random intercept models fit lines with the same slope but different intercept to all the components in <span class="math inline">\(u\)</span>. A graphical representation of random intercept models is provided below:</p>
 <div class="figure">
 <img src="Images/g1096.png" alt="Random Intercept Models" />
@@ -346,8 +350,8 @@ t.test(T, C)</code></pre>
 </div>
 <p>More complex models are random slope and intercept:</p>
 </div>
-<div id="y-beta_0-beta_1-x-mu-vt-epsilon" class="section level3">
-<h3><span class="math inline">\(y = \beta_0 + \beta_1 x + \mu + vT + \epsilon\)</span></h3>
+<div id="y-beta_0-beta_1-x-mu-vt-epsilon" class="section level4">
+<h4><span class="math inline">\(y = \beta_0 + \beta_1 x + \mu + vT + \epsilon\)</span></h4>
 <p>here the model with fit lines with different slope and intercept to all sub-groups. A graphical representation of such models is provided below:</p>
 <div class="figure">
 <img src="Images/g1097.png" alt="Random Slope and Intercept Models" />
@@ -355,6 +359,7 @@ t.test(T, C)</code></pre>
 </div>
 <p>As mentioned, mixed effect models can account for violations of the assumption of independence but they still assume normality and equality of variance.</p>
 <hr />
+</div>
 </div>
 </div>
 <div id="fitting-lme-in-r" class="section level2">
