@@ -174,7 +174,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Comprehensive R Course on Inferential Statistics</a>
+      <a class="navbar-brand" href="index.html">InferStat</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -302,13 +302,13 @@ C.F1 = rnorm(n=13, mean=24, sd=5)</code></pre>
 ##  Welch Two Sample t-test
 ## 
 ## data:  T.F1 and C.F1
-## t = 2.3212, df = 23.6, p-value = 0.02925
+## t = 3.2232, df = 23.724, p-value = 0.003666
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.5565777 9.5582177
+##  1.996211 9.116070
 ## sample estimates:
 ## mean of x mean of y 
-##  29.70345  24.64605</code></pre>
+##  29.32998  23.77384</code></pre>
 <p>The <em>p-value</em> should be significant (please be aware that values change every time we run the simulation, so your results may look different). Let’s now simulate data coming from another field:</p>
 <pre class="r"><code>T.F2 = rnorm(n=13, mean=50, sd=20)
 C.F2 = rnorm(n=13, mean=40, sd=20)</code></pre>
@@ -322,13 +322,13 @@ t.test(T, C)</code></pre>
 ##  Welch Two Sample t-test
 ## 
 ## data:  T and C
-## t = 1.0173, df = 48.779, p-value = 0.314
+## t = 2.6481, df = 41.591, p-value = 0.01139
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -4.718723 14.392769
+##   3.058516 22.677937
 ## sample estimates:
 ## mean of x mean of y 
-##  38.09620  33.25918</code></pre>
+##  43.09470  30.22647</code></pre>
 <p>Now there are good chances that the <em>p-value</em> of this second test will not be significant, since the power of this experiment is low. However, it may happen that you obtain significant results since it is a simulation and values are drawn randomly from normal distributions.</p>
 <p>The power of this experiment is low simply because including data from the second field inflate the variance within groups, and this masks the effect of treatment.</p>
 </div>

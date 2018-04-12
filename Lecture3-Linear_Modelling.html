@@ -174,7 +174,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Comprehensive R Course on Inferential Statistics</a>
+      <a class="navbar-brand" href="index.html">InferStat</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -390,21 +390,21 @@ SIM.LargeEffect[SIM.LargeEffect$Treatment==&quot;T3&quot;,]$Yield = S3</code></p
 <p>Let’s see how the object <code>SIM.LargeEffect</code> looks now:</p>
 <pre class="r"><code>SIM.LargeEffect</code></pre>
 <pre><code>##   Rep Treatment    Yield
-## 1   1        T1 6.339401
-## 2   2        T1 6.323843
-## 3   3        T1 2.125593
-## 4   1        T2 7.391073
-## 5   2        T2 6.575910
-## 6   3        T2 8.612435
-## 7   1        T3 5.090469
-## 8   2        T3 9.260361
-## 9   3        T3 5.928368</code></pre>
+## 1   1        T1 4.281881
+## 2   2        T1 5.785743
+## 3   3        T1 7.302455
+## 4   1        T2 9.521592
+## 5   2        T2 8.913204
+## 6   3        T2 3.147275
+## 7   1        T3 6.160281
+## 8   2        T3 9.190901
+## 9   3        T3 6.265130</code></pre>
 <p>Now that we have a dataset where we know the effect size to be exactly 0.5, we can test it using ANOVA:</p>
 <pre class="r"><code>ANOVA.LargeEffect = aov(Yield ~ Treatment, data=SIM.LargeEffect)
 summary(ANOVA.LargeEffect)</code></pre>
 <pre><code>##             Df Sum Sq Mean Sq F value Pr(&gt;F)
-## Treatment    2  10.68   5.340   1.356  0.327
-## Residuals    6  23.63   3.938</code></pre>
+## Treatment    2   3.97   1.987   0.338  0.726
+## Residuals    6  35.23   5.872</code></pre>
 <p>Clearly, since this is a simulation it may be that we obtain a significant <em>p-value</em> some times. However, chances are the large majority of times the <em>p-value</em> will not be significant, despite the relatively large differences between samples. This is because the samples size is small (<span class="math inline">\(n=3\)</span>).</p>
 <p>On the contrary, if the sample size is large enough we can obtain very small <em>p-values</em> even in cases where differences between groups are extremely small. Let’s look at the following simulation:</p>
 <pre class="r"><code>S4 = rnorm(n=7000, mean=5, sd=2)
@@ -421,8 +421,8 @@ SIM.SmallEffect[SIM.SmallEffect$Treatment==&quot;T3&quot;,]$Yield = S6
 ANOVA.SmallEffect = aov(Yield ~ Treatment, data=SIM.SmallEffect)
 summary(ANOVA.SmallEffect)</code></pre>
 <pre><code>##                Df Sum Sq Mean Sq F value Pr(&gt;F)    
-## Treatment       2    496  247.96      63 &lt;2e-16 ***
-## Residuals   62997 247942    3.94                   
+## Treatment       2    348  174.14   43.02 &lt;2e-16 ***
+## Residuals   62997 255022    4.05                   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Here we have three samples of size <span class="math inline">\(n = 7000\)</span> each, and with this amount of data finding very high significance for extremely small differences between groups is possible. This is clearly an unrealistic example; however, it clearly shows that <em>p-value</em> and differences between groups are not correlated. The conclusion is that it is always advisable to not just report the <em>p-value</em> but also the effect size (or at least a plot that clearly shows differences between groups).</p>
@@ -449,15 +449,15 @@ denominator = sqrt((((length(S5)-1)*sd(S5)^2)+((length(S4)-1)*sd(S4)^2))/(length
 
 ES = numerator/denominator
 ES</code></pre>
-<pre><code>## [1] 0.03556818</code></pre>
+<pre><code>## [1] 0.06515309</code></pre>
 <p>Now that we have the effect size we can input it in <code>pwr.anova.test</code> to compute the number of samples (remember that <span class="math inline">\(f = \frac{ES}{2}\)</span>):</p>
 <pre class="r"><code>pwr.anova.test(k=3, f=ES/2, sig.level=0.05, power=0.8) </code></pre>
 <pre><code>## 
 ##      Balanced one-way analysis of variance power calculation 
 ## 
 ##               k = 3
-##               n = 10155.37
-##               f = 0.01778409
+##               n = 3027.26
+##               f = 0.03257654
 ##       sig.level = 0.05
 ##           power = 0.8
 ## 
@@ -745,7 +745,7 @@ summary(ancova.mod)</code></pre>
 ## Residual standard error: 16.12 on 3436 degrees of freedom
 ## Multiple R-squared:  0.3406, Adjusted R-squared:  0.3394 
 ## F-statistic: 295.8 on 6 and 3436 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>To perform the multiple comparison and obtain the predicted marginal means, meaning men values for each N level corrected by brightness, we can use the following line:</p>
+<p>To perform the multiple comparison and obtain the predicted marginal means, meaning mean values for each N level corrected by brightness, we can use the following line:</p>
 <pre class="r"><code>lsmeans(ancova.mod, specs=c(&quot;nf&quot;), adjust=&quot;tukey&quot;, contr=&quot;cld&quot;)</code></pre>
 <pre><code>##  nf   lsmean        SE   df lower.CL upper.CL .group
 ##  N0 64.90413 0.6734523 3436 63.58372 66.22454  1    
@@ -759,6 +759,43 @@ summary(ancova.mod)</code></pre>
 ## P value adjustment: tukey method for comparing a family of 6 estimates 
 ## significance level used: alpha = 0.05</code></pre>
 <p>This function returns the estimated marginal means, with confidence intervals. We also have the last column with different numbers related to significant differences between groups. For example, here N0 is different from the rest of the levels, while N1, N2, and N3 are not different, and in fact belong all to group 2.</p>
+<p>To compute the <em>p-values</em> for each individual contrast we need to use a different syntax, with the function <code>cld</code> from the package <code>multcompView</code>:</p>
+<pre class="r"><code>lsmeans(ancova.mod, specs=c(&quot;nf&quot;)) %&gt;%
+  cld(alpha  = 0.05, Letters = letters, adjust=&quot;tukey&quot;, details=T)</code></pre>
+<pre><code>## $lsmeans
+##  nf   lsmean        SE   df lower.CL upper.CL .group
+##  N0 64.90413 0.6734523 3436 63.13123 66.67703  a    
+##  N1 68.42725 0.6711277 3436 66.66047 70.19403   b   
+##  N2 69.97487 0.6746750 3436 68.19875 71.75098   bc  
+##  N3 70.50731 0.6722909 3436 68.73746 72.27715   bcd 
+##  N4 72.25055 0.6740817 3436 70.47599 74.02510    cd 
+##  N5 72.90718 0.6722805 3436 71.13736 74.67700     d 
+## 
+## Confidence level used: 0.95 
+## Conf-level adjustment: sidak method for 6 estimates 
+## P value adjustment: tukey method for comparing a family of 6 estimates 
+## significance level used: alpha = 0.05 
+## 
+## $comparisons
+##  contrast  estimate        SE   df t.ratio p.value
+##  N1 - N0  3.5231219 0.9507549 3436   3.706  0.0029
+##  N2 - N0  5.0707362 0.9532842 3436   5.319  &lt;.0001
+##  N2 - N1  1.5476142 0.9516678 3436   1.626  0.5811
+##  N3 - N0  5.6031777 0.9515919 3436   5.888  &lt;.0001
+##  N3 - N1  2.0800557 0.9499610 3436   2.190  0.2427
+##  N3 - N2  0.5324415 0.9524155 3436   0.559  0.9936
+##  N4 - N0  7.3464172 0.9528371 3436   7.710  &lt;.0001
+##  N4 - N1  3.8232953 0.9511720 3436   4.020  0.0008
+##  N4 - N2  2.2756810 0.9537783 3436   2.386  0.1613
+##  N4 - N3  1.7432395 0.9520635 3436   1.831  0.4458
+##  N5 - N0  8.0030510 0.9515804 3436   8.410  &lt;.0001
+##  N5 - N1  4.4799290 0.9499423 3436   4.716  &lt;.0001
+##  N5 - N2  2.9323148 0.9524276 3436   3.079  0.0255
+##  N5 - N3  2.3998733 0.9507475 3436   2.524  0.1173
+##  N5 - N4  0.6566338 0.9520374 3436   0.690  0.9831
+## 
+## P value adjustment: tukey method for comparing a family of 6 estimates</code></pre>
+<p>This creates an dditional output with all <em>p-values</em> adjusted using the Tukey correction. The option adjust may take a series of values depending on the corrections we need to include. Another popular choise is Bonferroni (<code>adjust=&quot;bonferroni&quot;</code>). Please look at this <a href="https://www.rdocumentation.org/packages/lsmeans/versions/2.27-60/topics/summary">page</a> for all the possible choices.</p>
 <p>We can compare these values with what the one-way ANOVA estimated:</p>
 <pre class="r"><code>model.tables(One.Way, type=&quot;means&quot;)</code></pre>
 <pre><code>## Tables of means
@@ -774,7 +811,7 @@ summary(ancova.mod)</code></pre>
 <p>The output of <code>lsmeans</code> can be plotted to better interpret its results:</p>
 <pre class="r"><code>lsmeans(ancova.mod, specs=c(&quot;nf&quot;), adjust=&quot;tukey&quot;, contr=&quot;cld&quot;) %&gt;%
   plot</code></pre>
-<p><img src="Lecture3-Linear_Modelling_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<p><img src="Lecture3-Linear_Modelling_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
 </div>
 <div id="linear-regression" class="section level3">
 <h3><strong>Linear Regression</strong></h3>
@@ -810,7 +847,7 @@ summary(LinReg)</code></pre>
 <p>We can check that our model complies with these assumptions using the function <code>plot</code>:</p>
 <pre class="r"><code> par(mfrow=c(1,2))  
  plot(LinReg, which=c(1,2))</code></pre>
-<p><img src="Lecture3-Linear_Modelling_files/figure-html/unnamed-chunk-41-1.png" width="960" /></p>
+<p><img src="Lecture3-Linear_Modelling_files/figure-html/unnamed-chunk-42-1.png" width="960" /></p>
 <p>The first plot on the left represents the residuals against the fitted values (or the estimates from the model). One of our assumptions is that the error term had mean of zero and constant variance. This means that we should see the residuals equally spread around zero, and a more or less horizontal line (red line) with intercept on the zero. In this case the line is very close to being straight across zero, and the spread is more or less constant throughout the range of fitted values. Therefore, we can conclude our model does <strong>not</strong> violate this assumption.</p>
 <p>The second plot is the QQplot of the residuals. This plots the quantiles of the distribution of residuals against quantiles of a standard normal distribution (with mean = 0 and sd = 1). The more our samples fit a normal distribution, the more these points should lie on a straight line with an inclination of 45 degrees. In this case it seems the quantile line is not exactly straight, so we need an additional test to determine whether we can accept normality. We can compute the skewness of the residuals, with the function from the package <code>moments</code>:</p>
 <pre class="r"><code>LinReg %&gt;%

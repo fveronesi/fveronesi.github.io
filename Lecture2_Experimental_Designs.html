@@ -174,7 +174,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Comprehensive R Course on Inferential Statistics</a>
+      <a class="navbar-brand" href="index.html">InferStat</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -268,17 +268,17 @@ library(pwr)</code></pre>
 S2 = rnorm(n=3, mean=5, sd=2.5)</code></pre>
 <p>In this example we simulate two samples from a population with normal distribution, mean value equal to 5 and standard deviation of 2.5. Since they come from the same population we would expect them to be similar. However, mean values computed from three random samples may look very different. This is due to the large variation around the mean, which we cannot control as it may be driven by natural variability:</p>
 <pre class="r"><code>mean(S1); mean(S2)</code></pre>
-<pre><code>## [1] 6.33634</code></pre>
-<pre><code>## [1] 4.582595</code></pre>
+<pre><code>## [1] 3.467113</code></pre>
+<pre><code>## [1] 7.579848</code></pre>
 <p>With the same function we introduced in the previous lecture, we can compute standard error of the mean and confidence intervals:</p>
 <pre class="r"><code>SEM = function(x){sd(x) / sqrt(length(x))}
 
 data.frame(Lower95 = c(mean(S1)-2*SEM(S1), mean(S2)-2*SEM(S2)),
            Mean = c(mean(S1), mean(S2)),
            Upper95 = c(mean(S1)+2*SEM(S1), mean(S2)+2*SEM(S2)))</code></pre>
-<pre><code>##     Lower95     Mean  Upper95
-## 1 4.4509704 6.336340 8.221709
-## 2 0.8908728 4.582595 8.274316</code></pre>
+<pre><code>##    Lower95     Mean   Upper95
+## 1 2.732772 3.467113  4.201454
+## 2 5.080876 7.579848 10.078819</code></pre>
 <p>Confidence intervals provide a way to assess the accuracy of the mean value we compute from our sample. In fact, the 95% confidence intervals we calculated (as twice the standard error) provide us a range within which we are 95% certain of finding the true value of the mean, i.e. the population mean. That is why we can use confidence intervals to compare groups.</p>
 <p>As you can see, confidence intervals are very wide and they overlap. This indicates very clearly that the two samples may come from the same population. In this case, since we know they come from the same population, our conclusion is correct.</p>
 <p>However, let’s look at another sample:</p>
@@ -288,8 +288,8 @@ data.frame(Lower95 = c(mean(S1)-2*SEM(S1), mean(S3)-2*SEM(S3)),
            Mean = c(mean(S1), mean(S3)),
            Upper95 = c(mean(S1)+2*SEM(S1), mean(S3)+2*SEM(S3)))</code></pre>
 <pre><code>##    Lower95     Mean  Upper95
-## 1 4.450970 6.336340 8.221709
-## 2 4.631264 6.798724 8.966184</code></pre>
+## 1 2.732772 3.467113 4.201454
+## 2 1.736666 2.995555 4.254444</code></pre>
 <p>Sample 3 is now coming from a population with mean equal to 6.25, which is half a standard deviation higher than the previous population. So we would expect to find differences between sample 1 and sample 3. However, once again the confidence intervals overlap, suggesting no differences. So in this case we are reaching a wrong conclusion, saying the two samples are the same when in fact they are different. In other words we have a false negative conclusion. This is because the sample size is too low and the confidence intervals are therefore very wide.</p>
 <p>It may also happen, for example in cases where the distribution has high standard deviation compared to the mean, that even though samples come from the same population, confidence intervals barely overlap or not overlap at all. This is possible, and will make us erroneously conclude the the two samples are different. This is known as a false positive.</p>
 <p>In statistical terms, inferential statistics tests a null hypothesis, which assumes our treatments have no effect (i.e. samples come from the same population), against an alternative hypothesis, in which we try to demonstrate the effectiveness of our treatments (i.e. samples come from two distinct populations). The result is a probability (<em>p-value</em>), which allows us to either accept or reject the null hypothesis. However, to make sure we are not obtaining false positive or false negative outcomes we need to consider two quantities:</p>
@@ -335,7 +335,7 @@ data.frame(Lower95 = c(mean(S1)-2*SEM(S1), mean(S3)-2*SEM(S3)),
 ## [1] 2
 ## 
 ## $parameters$seed
-## [1] 1874208053
+## [1] -1579823877
 ## 
 ## $parameters$kinds
 ## [1] &quot;Super-Duper&quot;
@@ -346,27 +346,27 @@ data.frame(Lower95 = c(mean(S1)-2*SEM(S1), mean(S3)-2*SEM(S3)),
 ## 
 ## $book
 ##   plots r Treatment
-## 1   101 1   Control
-## 2   102 1         B
-## 3   103 2   Control
-## 4   104 2         B
-## 5   105 3   Control
-## 6   106 1         A
-## 7   107 2         A
-## 8   108 3         B
-## 9   109 3         A</code></pre>
+## 1   101 1         B
+## 2   102 1         A
+## 3   103 1   Control
+## 4   104 2   Control
+## 5   105 2         A
+## 6   106 3   Control
+## 7   107 3         A
+## 8   108 2         B
+## 9   109 3         B</code></pre>
 <p>We are interested in the last element of the object <code>CRD</code>:</p>
 <pre class="r"><code>CRD$book</code></pre>
 <pre><code>##   plots r Treatment
-## 1   101 1   Control
-## 2   102 1         B
-## 3   103 2   Control
-## 4   104 2         B
-## 5   105 3   Control
-## 6   106 1         A
-## 7   107 2         A
-## 8   108 3         B
-## 9   109 3         A</code></pre>
+## 1   101 1         B
+## 2   102 1         A
+## 3   103 1   Control
+## 4   104 2   Control
+## 5   105 2         A
+## 6   106 3   Control
+## 7   107 3         A
+## 8   108 2         B
+## 9   109 3         B</code></pre>
 <p>This is the table we can use to establish our design in the field, using the plot IDs to make sure we use the right treatment in the right place.</p>
 <p>One thing we need to remember in the package <code>agricolae</code> is that we can only provide a vector with our treatment structure. However, if our experiment is complex we need some more lines of code to plan it properly.</p>
 <p>Let’s look at the following lines:</p>
@@ -392,48 +392,48 @@ TRT.Control = c(TRT, rep(&quot;Control&quot;, 2)) </code></pre>
 <p>The vector <code>TRT.Control</code> has now all the elements we need to design our experiment, again with 3 replicates:</p>
 <pre class="r"><code>design.crd(trt=TRT.Control, r=3)$book</code></pre>
 <pre><code>##    plots r TRT.Control
-## 1    101 1         A2-
-## 2    102 1         C2-
-## 3    103 1         C1-
-## 4    104 1         B1-
-## 5    105 1         C1+
-## 6    106 1         C2+
-## 7    107 1         A2+
-## 8    108 1         A1-
-## 9    109 1         B2-
-## 10   110 2         C2-
-## 11   111 2         B2-
-## 12   112 1     Control
+## 1    101 1         C1+
+## 2    102 1         B1-
+## 3    103 1     Control
+## 4    104 1         C2+
+## 5    105 2     Control
+## 6    106 2         C1+
+## 7    107 1         B1+
+## 8    108 1         B2-
+## 9    109 1         A2-
+## 10   110 2         C2+
+## 11   111 1         B2+
+## 12   112 3     Control
 ## 13   113 1         A1+
-## 14   114 2     Control
-## 15   115 1         B1+
-## 16   116 2         C1+
-## 17   117 2         A2-
-## 18   118 2         A1+
-## 19   119 3         B2-
-## 20   120 2         B1-
-## 21   121 3     Control
-## 22   122 1         B2+
-## 23   123 2         B2+
-## 24   124 3         A1+
-## 25   125 1     Control
-## 26   126 3         A2-
-## 27   127 2         A2+
-## 28   128 2     Control
-## 29   129 2         B1+
-## 30   130 3         C2-
-## 31   131 2         C2+
-## 32   132 2         C1-
-## 33   133 3         B1-
-## 34   134 3         C1-
-## 35   135 3         B1+
-## 36   136 3     Control
-## 37   137 2         A1-
-## 38   138 3         A2+
-## 39   139 3         C1+
-## 40   140 3         A1-
-## 41   141 3         C2+
-## 42   142 3         B2+</code></pre>
+## 14   114 2         A1+
+## 15   115 1         A2+
+## 16   116 1         A1-
+## 17   117 1     Control
+## 18   118 1         C2-
+## 19   119 2         B2+
+## 20   120 2     Control
+## 21   121 2         A1-
+## 22   122 2         B2-
+## 23   123 3         A1-
+## 24   124 2         B1-
+## 25   125 3         B1-
+## 26   126 1         C1-
+## 27   127 3     Control
+## 28   128 3         C2+
+## 29   129 2         A2-
+## 30   130 2         A2+
+## 31   131 2         C1-
+## 32   132 3         B2-
+## 33   133 3         B2+
+## 34   134 3         C1+
+## 35   135 3         A2-
+## 36   136 3         A1+
+## 37   137 2         B1+
+## 38   138 3         B1+
+## 39   139 2         C2-
+## 40   140 3         A2+
+## 41   141 3         C1-
+## 42   142 3         C2-</code></pre>
 <hr />
 </div>
 <div id="complete-block-design" class="section level3">
@@ -442,14 +442,14 @@ TRT.Control = c(TRT, rep(&quot;Control&quot;, 2)) </code></pre>
 <pre class="r"><code>CBD = design.rcbd(trt=TRT.Control, r=3)</code></pre>
 <p>For more complex designs, the function create a sketch that we can print for easier visualisation:</p>
 <pre class="r"><code>print(CBD$sketch)</code></pre>
-<pre><code>##      [,1]  [,2]  [,3]  [,4]      [,5]  [,6]  [,7]  [,8]      [,9] 
-## [1,] &quot;B2+&quot; &quot;C2-&quot; &quot;A2+&quot; &quot;B1+&quot;     &quot;A1+&quot; &quot;B1-&quot; &quot;C1-&quot; &quot;C1+&quot;     &quot;A2-&quot;
-## [2,] &quot;B2-&quot; &quot;C1-&quot; &quot;B2+&quot; &quot;A1-&quot;     &quot;C2+&quot; &quot;A2+&quot; &quot;A2-&quot; &quot;Control&quot; &quot;B1+&quot;
-## [3,] &quot;C2+&quot; &quot;A2+&quot; &quot;B1-&quot; &quot;Control&quot; &quot;C1+&quot; &quot;A1+&quot; &quot;C2-&quot; &quot;B2+&quot;     &quot;B2-&quot;
-##      [,10]     [,11] [,12]     [,13] [,14]    
-## [1,] &quot;Control&quot; &quot;C2+&quot; &quot;B2-&quot;     &quot;A1-&quot; &quot;Control&quot;
-## [2,] &quot;Control&quot; &quot;C1+&quot; &quot;B1-&quot;     &quot;A1+&quot; &quot;C2-&quot;    
-## [3,] &quot;C1-&quot;     &quot;B1+&quot; &quot;Control&quot; &quot;A1-&quot; &quot;A2-&quot;</code></pre>
+<pre><code>##      [,1]  [,2]  [,3]  [,4]  [,5]      [,6]      [,7]  [,8]      [,9]     
+## [1,] &quot;A1-&quot; &quot;A1+&quot; &quot;B1-&quot; &quot;C1+&quot; &quot;B2+&quot;     &quot;A2+&quot;     &quot;B1+&quot; &quot;C2-&quot;     &quot;Control&quot;
+## [2,] &quot;C2-&quot; &quot;C1+&quot; &quot;C1-&quot; &quot;C2+&quot; &quot;B1+&quot;     &quot;B2+&quot;     &quot;A2-&quot; &quot;Control&quot; &quot;A1-&quot;    
+## [3,] &quot;B2+&quot; &quot;C1+&quot; &quot;B2-&quot; &quot;A2+&quot; &quot;Control&quot; &quot;Control&quot; &quot;B1+&quot; &quot;A1-&quot;     &quot;C1-&quot;    
+##      [,10] [,11] [,12] [,13]     [,14]    
+## [1,] &quot;C1-&quot; &quot;A2-&quot; &quot;C2+&quot; &quot;Control&quot; &quot;B2-&quot;    
+## [2,] &quot;B1-&quot; &quot;A2+&quot; &quot;B2-&quot; &quot;A1+&quot;     &quot;Control&quot;
+## [3,] &quot;A2-&quot; &quot;C2-&quot; &quot;B1-&quot; &quot;A1+&quot;     &quot;C2+&quot;</code></pre>
 <hr />
 </div>
 <div id="incomplete-block-design" class="section level3">
@@ -478,9 +478,9 @@ TRT.Control</code></pre>
 ## 
 ## &lt;&lt;&lt; Book &gt;&gt;&gt;</code></pre>
 <pre class="r"><code>print(BIB$sketch)</code></pre>
-<pre><code>##      [,1]      [,2] [,3] [,4]      [,5] [,6] [,7]
-## [1,] &quot;Control&quot; &quot;A1&quot; &quot;B1&quot; &quot;C1&quot;      &quot;C2&quot; &quot;B2&quot; &quot;A2&quot;
-## [2,] &quot;B2&quot;      &quot;C2&quot; &quot;A1&quot; &quot;Control&quot; &quot;C1&quot; &quot;B1&quot; &quot;A2&quot;</code></pre>
+<pre><code>##      [,1]      [,2] [,3] [,4] [,5]      [,6] [,7]
+## [1,] &quot;Control&quot; &quot;B1&quot; &quot;A1&quot; &quot;A2&quot; &quot;C1&quot;      &quot;B2&quot; &quot;C2&quot;
+## [2,] &quot;B2&quot;      &quot;A1&quot; &quot;A2&quot; &quot;C2&quot; &quot;Control&quot; &quot;C1&quot; &quot;B1&quot;</code></pre>
 <hr />
 </div>
 <div id="split-plot-design" class="section level3">
@@ -499,20 +499,20 @@ TRT.Control</code></pre>
 <pre><code>##    plots splots r Trt1 Trt2
 ## 1    101      1 1    A    1
 ## 2    101      2 1    A    2
-## 3    102      1 1    C    1
-## 4    102      2 1    C    2
-## 5    103      1 2    A    2
-## 6    103      2 2    A    1
-## 7    104      1 2    C    1
-## 8    104      2 2    C    2
-## 9    105      1 1    B    1
-## 10   105      2 1    B    2
+## 3    102      1 2    A    2
+## 4    102      2 2    A    1
+## 5    103      1 1    C    2
+## 6    103      2 1    C    1
+## 7    104      1 2    C    2
+## 8    104      2 2    C    1
+## 9    105      1 1    B    2
+## 10   105      2 1    B    1
 ## 11   106      1 3    A    1
 ## 12   106      2 3    A    2
 ## 13   107      1 2    B    2
 ## 14   107      2 2    B    1
-## 15   108      1 3    B    1
-## 16   108      2 3    B    2
+## 15   108      1 3    B    2
+## 16   108      2 3    B    1
 ## 17   109      1 3    C    2
 ## 18   109      2 3    C    1</code></pre>
 <hr />
@@ -533,33 +533,33 @@ StPl = design.strip(Trt1, Trt2, r=3)
 
 StPl$book</code></pre>
 <pre><code>##    plots block Trt1 Trt2
-## 1    101     1   A1   B3
-## 2    102     1   A1   B2
-## 3    103     1   A1   B1
-## 4    104     1   A3   B3
-## 5    105     1   A3   B2
-## 6    106     1   A3   B1
-## 7    107     1   A2   B3
-## 8    108     1   A2   B2
+## 1    101     1   A3   B2
+## 2    102     1   A3   B3
+## 3    103     1   A3   B1
+## 4    104     1   A1   B2
+## 5    105     1   A1   B3
+## 6    106     1   A1   B1
+## 7    107     1   A2   B2
+## 8    108     1   A2   B3
 ## 9    109     1   A2   B1
-## 10   201     2   A1   B1
-## 11   202     2   A1   B3
-## 12   203     2   A1   B2
-## 13   204     2   A3   B1
-## 14   205     2   A3   B3
-## 15   206     2   A3   B2
-## 16   207     2   A2   B1
-## 17   208     2   A2   B3
-## 18   209     2   A2   B2
-## 19   301     3   A1   B1
-## 20   302     3   A1   B3
+## 10   201     2   A2   B3
+## 11   202     2   A2   B1
+## 12   203     2   A2   B2
+## 13   204     2   A1   B3
+## 14   205     2   A1   B1
+## 15   206     2   A1   B2
+## 16   207     2   A3   B3
+## 17   208     2   A3   B1
+## 18   209     2   A3   B2
+## 19   301     3   A1   B3
+## 20   302     3   A1   B1
 ## 21   303     3   A1   B2
-## 22   304     3   A2   B1
-## 23   305     3   A2   B3
-## 24   306     3   A2   B2
-## 25   307     3   A3   B1
-## 26   308     3   A3   B3
-## 27   309     3   A3   B2</code></pre>
+## 22   304     3   A3   B3
+## 23   305     3   A3   B1
+## 24   306     3   A3   B2
+## 25   307     3   A2   B3
+## 26   308     3   A2   B1
+## 27   309     3   A2   B2</code></pre>
 <hr />
 </div>
 <div id="latin-square-design" class="section level3">
@@ -569,12 +569,12 @@ StPl$book</code></pre>
 
 LS$sketch</code></pre>
 <pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6]
-## [1,] &quot;A2&quot; &quot;C2&quot; &quot;A1&quot; &quot;B1&quot; &quot;C1&quot; &quot;B2&quot;
-## [2,] &quot;A1&quot; &quot;C1&quot; &quot;C2&quot; &quot;A2&quot; &quot;B2&quot; &quot;B1&quot;
-## [3,] &quot;B1&quot; &quot;A1&quot; &quot;A2&quot; &quot;B2&quot; &quot;C2&quot; &quot;C1&quot;
-## [4,] &quot;C1&quot; &quot;B1&quot; &quot;B2&quot; &quot;C2&quot; &quot;A2&quot; &quot;A1&quot;
-## [5,] &quot;B2&quot; &quot;A2&quot; &quot;B1&quot; &quot;C1&quot; &quot;A1&quot; &quot;C2&quot;
-## [6,] &quot;C2&quot; &quot;B2&quot; &quot;C1&quot; &quot;A1&quot; &quot;B1&quot; &quot;A2&quot;</code></pre>
+## [1,] &quot;C2&quot; &quot;C1&quot; &quot;A2&quot; &quot;B1&quot; &quot;A1&quot; &quot;B2&quot;
+## [2,] &quot;A2&quot; &quot;A1&quot; &quot;B2&quot; &quot;C1&quot; &quot;B1&quot; &quot;C2&quot;
+## [3,] &quot;B2&quot; &quot;B1&quot; &quot;C2&quot; &quot;A1&quot; &quot;C1&quot; &quot;A2&quot;
+## [4,] &quot;B1&quot; &quot;A2&quot; &quot;C1&quot; &quot;C2&quot; &quot;B2&quot; &quot;A1&quot;
+## [5,] &quot;C1&quot; &quot;B2&quot; &quot;A1&quot; &quot;A2&quot; &quot;C2&quot; &quot;B1&quot;
+## [6,] &quot;A1&quot; &quot;C2&quot; &quot;B1&quot; &quot;B2&quot; &quot;A2&quot; &quot;C1&quot;</code></pre>
 <p>This is a 6x6 latin square.</p>
 <p>Please look at the package description to know what other experimental designs are avilable in <code>agricolae</code>.</p>
 <hr />
@@ -589,13 +589,13 @@ LS$sketch</code></pre>
 ##  Two Sample t-test
 ## 
 ## data:  S1 and S3
-## t = -0.32191, df = 4, p-value = 0.7636
+## t = 0.64712, df = 4, p-value = 0.5528
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -4.450354  3.525586
+##  -1.551659  2.494775
 ## sample estimates:
 ## mean of x mean of y 
-##  6.336340  6.798724</code></pre>
+##  3.467113  2.995555</code></pre>
 <p>The t-test checks the two samples under the hypothesis that they come from two different distributions. As you can see we have specified the alternative hypothesis, <code>two.sided</code>, which means test whether <code>S1</code> and <code>S2</code> come from two populations. The option <code>var.equal</code> is useful in cases where we cannot assume that the two samples have the same variance, by default this is set as <code>TRUE</code>. The test returns several outputs, and what we are mostly interested in is the <em>p-vaue</em>, which tells whether we can reject the null hypothesis.</p>
 <p>The decision of rejecting the null hypothesis is something we can do based on the significance level we want to achieve. Significance level is the <span class="math inline">\(\alpha\)</span> we discussed above, and indicates the probability of rejecting the null hypothesis when it is actually true (false positive). Usually, we consider a statistical test significant only if the <em>p-value</em> is below 0.05, meaning that the chances of getting a false positive are 5%.</p>
 <p>As mentioned before, after properly accounting for sources of error by creating good experimental designs, the only way we have to ensure the statistical test can detect differences between samples is increasing their size. Larger samples have lower standard error of the mean, and therefore are less variable. However, since we are often constrained by space or time, we need to make sure we do not design experiments that are too complex to run. Therefore the sample size needs to be large enough to get robust confidence intervals, but small enough so that we can run the experiment smoothly.</p>
@@ -620,7 +620,7 @@ denominator = sqrt((((length(S3)-1)*sd(S3)^2)+((length(S1)-1)*sd(S1)^2))/(length
 
 ES = numerator/denominator
 ES</code></pre>
-<pre><code>## [1] 0.2628419</code></pre>
+<pre><code>## [1] -0.5283676</code></pre>
 <p>Cohen’s d is very easy to interpret, because it describes differences between groups based on their standard deviation. An effect size ES equal 1, would imply that the means for the two groups are separated by one full standard deviation; while ES equal 0.5 implies the two values are half a standard deviation away. To better understand this point please look at the image below:</p>
 <div class="figure">
 <img src="Images/effect_size.gif" alt="Effect Size" />
@@ -641,8 +641,8 @@ PW.T</code></pre>
 <pre><code>## 
 ##      Two-sample t test power calculation 
 ## 
-##               n = 228.1849
-##               d = 0.2628419
+##               n = 57.20589
+##               d = 0.5283676
 ##       sig.level = 0.05
 ##           power = 0.8
 ##     alternative = two.sided
@@ -652,7 +652,7 @@ PW.T</code></pre>
 <pre class="r"><code>SampleSize = ceiling(PW.T$n)
 
 SampleSize</code></pre>
-<pre><code>## [1] 229</code></pre>
+<pre><code>## [1] 58</code></pre>
 <p>Now we can input the sample size into a new simulation and run the t-test again:</p>
 <pre class="r"><code>S4 = rnorm(n=SampleSize, mean=5, sd=2.5)
 S5 = rnorm(n=SampleSize, mean=6.25, sd=2.5)
@@ -662,13 +662,13 @@ t.test(S4, S5, alternative=&quot;two.sided&quot;)</code></pre>
 ##  Welch Two Sample t-test
 ## 
 ## data:  S4 and S5
-## t = -6.0641, df = 454.87, p-value = 2.792e-09
+## t = -2.3314, df = 113.8, p-value = 0.02149
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -1.7969205 -0.9173171
+##  -1.961539 -0.159375
 ## sample estimates:
 ## mean of x mean of y 
-##  4.974782  6.331901</code></pre>
+##  5.515149  6.575606</code></pre>
 <p>Results should now be significant, i.e. <em>p-value</em> below 0.05. However, please remember that around 5% of the times results will still not result significant. This is because we set a significant level at 5%.</p>
 <hr />
 </div>
