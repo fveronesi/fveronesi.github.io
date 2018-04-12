@@ -217,18 +217,35 @@ $(document).ready(function () {
 
 </div>
 
-
-<div id="summary" class="section level2">
-<h2><strong>Summary</strong></h2>
+<div id="TOC">
 <ul>
-<li>Introduction</li>
-<li>Data Structures</li>
-<li>Data types</li>
-<li>Subsetting</li>
-<li>Importing Data</li>
-<li>Descriptive Statistics</li>
-<li>Plotting</li>
+<li><a href="#introduction"><strong>Introduction</strong></a></li>
+<li><a href="#data-structures"><strong>Data Structures</strong></a><ul>
+<li><a href="#vectors"><strong>Vectors</strong></a></li>
+<li><a href="#matrix"><strong>Matrix</strong></a></li>
+<li><a href="#data.frame"><strong>Data.Frame</strong></a></li>
+<li><a href="#list"><strong>List</strong></a></li>
+</ul></li>
+<li><a href="#subsetting"><strong>Subsetting</strong></a></li>
+<li><a href="#importing-data"><strong>Importing Data</strong></a></li>
+<li><a href="#descriptive-statistics"><strong>Descriptive Statistics</strong></a><ul>
+<li><a href="#centrality"><strong>Centrality</strong></a></li>
+<li><a href="#spread"><strong>Spread</strong></a></li>
+<li><a href="#summary"><strong>Summary</strong></a></li>
+<li><a href="#quantiles"><strong>Quantiles</strong></a></li>
+</ul></li>
+<li><a href="#plotting"><strong>Plotting</strong></a><ul>
+<li><a href="#histograms"><strong>Histograms</strong></a></li>
+<li><a href="#bar-charts"><strong>Bar Charts</strong></a></li>
+<li><a href="#scatterplot"><strong>Scatterplot</strong></a></li>
+<li><a href="#box-plots"><strong>Box-Plots</strong></a></li>
+</ul></li>
+<li><a href="#conclusions"><strong>Conclusions</strong></a></li>
+<li><a href="#references"><strong>References</strong></a></li>
+<li><a href="#homework"><strong>Homework</strong></a></li>
 </ul>
+</div>
+
 <hr />
 <div id="note" class="section level4">
 <h4><em>NOTE</em></h4>
@@ -238,7 +255,6 @@ $(document).ready(function () {
 <p><a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf">rmarkdown-cheatsheet</a></p>
 <p><a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">rmarkdown-reference</a></p>
 <hr />
-</div>
 </div>
 <div id="introduction" class="section level2">
 <h2><strong>Introduction</strong></h2>
@@ -257,9 +273,9 @@ $(document).ready(function () {
 <pre class="r"><code>A = rnorm(n=20, mean=4, sd=1)
 
 A</code></pre>
-<pre><code>##  [1] 5.195844 3.870442 2.294883 4.888632 3.421004 3.330322 3.394676
-##  [8] 3.220257 4.866226 3.305635 4.276615 4.089925 2.031743 2.908450
-## [15] 3.170742 5.159863 3.222776 4.158368 4.433489 3.655765</code></pre>
+<pre><code>##  [1] 6.154585 1.375076 3.112184 2.549107 1.946124 4.066239 4.051548
+##  [8] 5.078139 5.065346 3.831968 2.919311 4.054178 2.738388 4.422122
+## [15] 4.303200 3.220867 4.046459 2.372409 4.088517 5.668128</code></pre>
 <p>A is a vector with 40 elements. We created this vector by using the function <code>rnorm</code>, which randomly samples <code>n = 20</code> numerical values from a normal distribution (<code>mean = 4, sd = 1</code>)</p>
 <pre class="r"><code>length(A)</code></pre>
 <pre><code>## [1] 20</code></pre>
@@ -267,9 +283,9 @@ A</code></pre>
 <pre class="r"><code>B = A + 3
 
 B</code></pre>
-<pre><code>##  [1] 8.195844 6.870442 5.294883 7.888632 6.421004 6.330322 6.394676
-##  [8] 6.220257 7.866226 6.305635 7.276615 7.089925 5.031743 5.908450
-## [15] 6.170742 8.159863 6.222776 7.158368 7.433489 6.655765</code></pre>
+<pre><code>##  [1] 9.154585 4.375076 6.112184 5.549107 4.946124 7.066239 7.051548
+##  [8] 8.078139 8.065346 6.831968 5.919311 7.054178 5.738388 7.422122
+## [15] 7.303200 6.220867 7.046459 5.372409 7.088517 8.668128</code></pre>
 <p>This expression adds the number 3 to each element of the <code>vector</code>, and stores this new <code>vector</code> into an object named <code>B</code>.</p>
 </div>
 <div id="matrix" class="section level3">
@@ -332,9 +348,9 @@ print(M)</code></pre>
 <pre class="r"><code>L = list(A, M)
 print(L)</code></pre>
 <pre><code>## [[1]]
-##  [1] 5.195844 3.870442 2.294883 4.888632 3.421004 3.330322 3.394676
-##  [8] 3.220257 4.866226 3.305635 4.276615 4.089925 2.031743 2.908450
-## [15] 3.170742 5.159863 3.222776 4.158368 4.433489 3.655765
+##  [1] 6.154585 1.375076 3.112184 2.549107 1.946124 4.066239 4.051548
+##  [8] 5.078139 5.065346 3.831968 2.919311 4.054178 2.738388 4.422122
+## [15] 4.303200 3.220867 4.046459 2.372409 4.088517 5.668128
 ## 
 ## [[2]]
 ##      [,1] [,2] [,3] [,4] [,5]
@@ -355,10 +371,10 @@ print(L)</code></pre>
 <p>We can use square brackets to extract elements from all data structures. However, the syntax changes between objects.</p>
 <p><code>Vector</code> are 1D arrays so we can extract elements just by specifying the position along the <code>vector</code> we want to extract, starting from 1 up to <code>length(vector)</code>:</p>
 <pre class="r"><code>A[1]</code></pre>
-<pre><code>## [1] 5.195844</code></pre>
+<pre><code>## [1] 6.154585</code></pre>
 <p>This extracts the first element of the <code>vector</code>.</p>
 <pre class="r"><code>A[length(A)]</code></pre>
-<pre><code>## [1] 3.655765</code></pre>
+<pre><code>## [1] 5.668128</code></pre>
 <p>This extracts the last element, in position equal to <code>length(A)</code>, which is 40.</p>
 <p>For <code>matrix</code> and <code>data.frame</code>, since these are 2D objects, we need to specify both a row and a column to extract:</p>
 <pre class="r"><code>M[3,5]</code></pre>
@@ -389,12 +405,12 @@ print(L)</code></pre>
 ## [137] 6.3 6.4 6.0 6.9 6.7 6.9 5.8 6.8 6.7 6.7 6.3 6.5 6.2 5.9</code></pre>
 <p>For lists, since these are complex objects, we have two levels of extraction:</p>
 <pre class="r"><code>L[[1]]</code></pre>
-<pre><code>##  [1] 5.195844 3.870442 2.294883 4.888632 3.421004 3.330322 3.394676
-##  [8] 3.220257 4.866226 3.305635 4.276615 4.089925 2.031743 2.908450
-## [15] 3.170742 5.159863 3.222776 4.158368 4.433489 3.655765</code></pre>
+<pre><code>##  [1] 6.154585 1.375076 3.112184 2.549107 1.946124 4.066239 4.051548
+##  [8] 5.078139 5.065346 3.831968 2.919311 4.054178 2.738388 4.422122
+## [15] 4.303200 3.220867 4.046459 2.372409 4.088517 5.668128</code></pre>
 <p>The first levels, identified by 2 square brackets, extracts the element of the list (in this case element 1, which is a vector). Then we can extract a particular element from the vector adding an additional level:</p>
 <pre class="r"><code>L[[1]][1]</code></pre>
-<pre><code>## [1] 5.195844</code></pre>
+<pre><code>## [1] 6.154585</code></pre>
 <p>The same would be true for the second element, which is a <code>data.frame</code>:</p>
 <pre class="r"><code>L[[2]][3,5]</code></pre>
 <pre><code>## [1] 15</code></pre>
@@ -452,11 +468,11 @@ This technique relies on indexes to capture important features of the dataset, s
 <div id="centrality" class="section level3">
 <h3><strong>Centrality</strong></h3>
 <p>The most popular index of centrality is the mean, or arithmetic average:</p>
-</div>
-<div id="displaystylebary-frac1n-times-sum_i1n-y_i" class="section level3">
-<h3><span class="math inline">\(\displaystyle\bar{y} = \frac{1}{n} \times \sum_{i=1}^{n} y_i\)</span></h3>
+<div id="displaystylebary-frac1n-times-sum_i1n-y_i" class="section level4">
+<h4><span class="math inline">\(\displaystyle\bar{y} = \frac{1}{n} \times \sum_{i=1}^{n} y_i\)</span></h4>
 <p>where <span class="math inline">\(\bar{y}\)</span> is the mean of a variable <span class="math inline">\(y\)</span>, and <span class="math inline">\(n\)</span> is the number of elements in <span class="math inline">\(y\)</span>.</p>
 <hr />
+</div>
 <div id="note-1" class="section level4">
 <h4><em>Note</em></h4>
 <p>The previous equation was written using the Latex syntax. More info here: <a href="https://en.wikibooks.org/wiki/LaTeX/Mathematics#Powers_and_indices">Latex Equation Reference</a></p>
@@ -483,7 +499,7 @@ This technique relies on indexes to capture important features of the dataset, s
 <pre><code>## [1] 28.89327</code></pre>
 </div>
 </div>
-<div id="summary-1" class="section level3">
+<div id="summary" class="section level3">
 <h3><strong>Summary</strong></h3>
 <p>Sometimes, instead of computing indexes for a single variable we are more interested in looking at the whole dataset at once. We can do that with the function <code>summary</code>:</p>
 <pre class="r"><code>summary(Crimes)</code></pre>
@@ -585,9 +601,8 @@ Mean</code></pre>
 <p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
 <p>It seems Northern states have slightly more crimes.</p>
 <p>We can provide more details on the plot by creating error bars, for example using the standard error of the mean. The standard error is computed as follows:</p>
-</div>
-<div id="displaystyle-sem-fracssqrtn" class="section level3">
-<h3><span class="math inline">\(\displaystyle SEM = \frac{s}{\sqrt{n}}\)</span></h3>
+<div id="displaystyle-sem-fracssqrtn" class="section level4">
+<h4><span class="math inline">\(\displaystyle SEM = \frac{s}{\sqrt{n}}\)</span></h4>
 <p>where <span class="math inline">\(s\)</span> is the standard deviation, and <span class="math inline">\(n\)</span> is the number of samples.</p>
 <p>In base R there is no function to compute the standard error, but we can create one:</p>
 <pre class="r"><code>SEM = function(x){sd(x) / sqrt(length(x))}</code></pre>
@@ -613,6 +628,7 @@ arrows(x0=BC_PLOT, y0=Mean - (2*SEM.STATES), x1=BC_PLOT, y1=Mean + (2*SEM.STATES
 <p><img src="Lecture1_BasicR_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
 <p>To know more about the code in the last two functions please refer to: <a href="https://www.r-bloggers.com/building-barplots-with-error-bars/">www.r-bloggers.com/building-barplots-with-error-bars/</a></p>
 <p>Plotting confidence intervals around the mean is extremely useful since it may provide good indications of statistical differences between groups. In fact, SEM is used in inferential statistics to compare groups. If two error bars are overlapping there are good chances that with a formal test the two groups will not result statistically different. This is something we can use to formulate our hypothesis before applying any statistical test.</p>
+</div>
 </div>
 <div id="scatterplot" class="section level3">
 <h3><strong>Scatterplot</strong></h3>

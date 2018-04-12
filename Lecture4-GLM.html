@@ -217,22 +217,27 @@ $(document).ready(function () {
 
 </div>
 
-
-<div id="summary" class="section level2">
-<h2><strong>Summary</strong></h2>
+<div id="TOC">
 <ul>
-<li>Introduction</li>
-<li>Non-parametric Tests</li>
-<li>Generalized Linear Models (GLM)
-<ul>
-<li>Count Data</li>
-<li>Binary Outcomes</li>
-<li>Proportions</li>
+<li><a href="#introduction"><strong>Introduction</strong></a></li>
+<li><a href="#loading-packages"><strong>Loading Packages</strong></a></li>
+<li><a href="#non-parametric-tests"><strong>Non-parametric Tests</strong></a></li>
+<li><a href="#glm---count-data"><strong>GLM - Count Data</strong></a><ul>
+<li><a href="#checking-assumption"><strong>Checking Assumption</strong></a></li>
+<li><a href="#interpretation"><strong>Interpretation</strong></a></li>
+<li><a href="#overdispersion"><strong>Overdispersion</strong></a></li>
 </ul></li>
-<li>Power Analysis for GLM</li>
+<li><a href="#glm---presenceabsence"><strong>GLM - Presence/Absence</strong></a><ul>
+<li><a href="#interpretation-1"><strong>Interpretation</strong></a></li>
+</ul></li>
+<li><a href="#glm---proportion"><strong>GLM - Proportion</strong></a></li>
+<li><a href="#power-analysis-for-glm"><strong>Power Analysis for GLM</strong></a></li>
+<li><a href="#conclusions"><strong>Conclusions</strong></a></li>
+<li><a href="#references"><strong>References</strong></a></li>
 </ul>
-<hr />
 </div>
+
+<hr />
 <div id="introduction" class="section level2">
 <h2><strong>Introduction</strong></h2>
 <p>For certain datasets the assumption of normality cannot be met. In such cases we may consider different options: GLM is one of them and it should be a good solution for datasets like counts and presence/absence data (we will look at GLM below). Another option could be to transform the data and “normalize”&quot; them to meet the assumption of normality. However, with transformations we need to be extremely careful because the estimates of the slopes will also be transformed, and so we always need to know how to back-transform our data. The final option would be to use non-parametric tests, which do not assume a normal distribution.</p>
@@ -261,7 +266,7 @@ wilcox.test(S1, S3, exact=T)</code></pre>
 ##  Wilcoxon rank sum test
 ## 
 ## data:  S1 and S3
-## W = 1, p-value = 0.2
+## W = 3, p-value = 0.7
 ## alternative hypothesis: true location shift is not equal to 0</code></pre>
 <p>For the one-way ANOVA the non-parametric alternative is the Kruskal-Wallis test:</p>
 <pre class="r"><code>kruskal.test(yield ~ nf, data=lasrosas.corn) </code></pre>
@@ -291,8 +296,8 @@ wilcox.test(S1, S3, exact=T)</code></pre>
 </div>
 <p>The characteristic of the poisson distribution is that it only includes non-negative integers (i.e. whole numbers), and usually the large majority of data are close to zero.</p>
 <p>GLM still solve linear equations, but because of the data distribution they employ a link function to “linearise” the model. In fact, GLM for count data solve the equation below:</p>
-<div id="lny-beta_0-beta_1-x" class="section level3">
-<h3><span class="math inline">\(\ln{(y)} = \beta_0 + \beta_1 x\)</span></h3>
+<div id="lny-beta_0-beta_1-x" class="section level4">
+<h4><span class="math inline">\(\ln{(y)} = \beta_0 + \beta_1 x\)</span></h4>
 <p>For testing GLM for counts in R we are going to import another dataset from the package <code>agridat</code>:</p>
 <pre class="r"><code>data(beall.webworms)
 str(beall.webworms)</code></pre>
@@ -482,8 +487,8 @@ summary(NegBin.Reg)</code></pre>
 <div id="glm---presenceabsence" class="section level2">
 <h2><strong>GLM - Presence/Absence</strong></h2>
 <p>Another popular form of regression that can be tackled with GLM is the logistic regression, where the variable of interest is binary (0 or 1, presence or absence, and any other binary outcome). In this case the regression model takes the following equation:</p>
-<div id="lnleftfracpy1-pyright-beta_0-beta_1-x" class="section level3">
-<h3><span class="math inline">\(\ln\left(\frac{p(y)}{1-p(y)}\right) = \beta_0 + \beta_1 x\)</span></h3>
+<div id="lnleftfracpy1-pyright-beta_0-beta_1-x" class="section level4">
+<h4><span class="math inline">\(\ln\left(\frac{p(y)}{1-p(y)}\right) = \beta_0 + \beta_1 x\)</span></h4>
 <p>The equation is identical to the standard linear model, but what we are computing here is the log of the probability that one of the two outcomes will occur, also referred as logit function.</p>
 <p>For this example we are loading the dataset <code>johnson.blight</code>, again available in <code>agridat</code>. Here the binary variable of interest is the presence or absence of blight (either 0 or 1) in potatoes:</p>
 <pre class="r"><code>data(johnson.blight)
@@ -537,9 +542,8 @@ str(johnson.blight)</code></pre>
 <div id="interpretation-1" class="section level3">
 <h3><strong>Interpretation</strong></h3>
 <p>The interpretation of estimates for a logistic regression model are a bit more complex than what we saw for count data. In fact, here we are dealing with a logit transformation and to compute the probabilities we need to solve the following:</p>
-</div>
-<div id="py1-fracexpbeta_0-beta_1-x1-expbeta_0-beta_1-x" class="section level3">
-<h3><span class="math inline">\(p(y=1) = \frac{\exp(\beta_0 + \beta_1 x)}{1 + \exp(\beta_0 + \beta_1 x)}\)</span></h3>
+<div id="py1-fracexpbeta_0-beta_1-x1-expbeta_0-beta_1-x" class="section level4">
+<h4><span class="math inline">\(p(y=1) = \frac{\exp(\beta_0 + \beta_1 x)}{1 + \exp(\beta_0 + \beta_1 x)}\)</span></h4>
 <p>here <span class="math inline">\(\beta_0\)</span> is the value of the intercept (-4.9854), and <span class="math inline">\(\beta_1\)</span> is the value of the slope for <code>rain.am</code> (0.4467).</p>
 <p>Let’s say for example that we need to compute probabilities of blight if rainfall is 10 mm, we need to solve the equation above using the estimates from the model.</p>
 <pre class="r"><code>exp(-4.9854 + 0.4467 * 10)/(1 + exp(-4.9854 + 0.4467 * 10))</code></pre>
@@ -565,6 +569,7 @@ str(johnson.blight)</code></pre>
 ## 0.3732829 0.4821493</code></pre>
 <p>As you can see the rate of change is around 10% (for this part of the curve).</p>
 <hr />
+</div>
 </div>
 </div>
 <div id="glm---proportion" class="section level2">

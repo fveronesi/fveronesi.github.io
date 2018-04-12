@@ -217,19 +217,34 @@ $(document).ready(function () {
 
 </div>
 
-
-<div id="summary" class="section level2">
-<h2><strong>Summary</strong></h2>
+<div id="TOC">
 <ul>
-<li>Introduction</li>
-<li>Assumptions of parametric tests</li>
-<li>ANOVA</li>
-<li>Statistical vs. Biological Effect</li>
-<li>Other Forms of Linear Modelling</li>
-<li>Checking Assumptions</li>
+<li><a href="#introduction"><strong>Introduction</strong></a></li>
+<li><a href="#assumptions-of-parametric-tests"><strong>Assumptions of parametric tests</strong></a></li>
+<li><a href="#anova"><strong>ANOVA</strong></a><ul>
+<li><a href="#statistical-vs.biological-effect"><strong>Statistical vs. Biological Effect</strong></a></li>
+<li><a href="#sample-size-for-one-way-anova"><strong>Sample size for One-Way ANOVA</strong></a></li>
+<li><a href="#post-hoc-power-analysis"><strong><em>Post Hoc</em> Power Analysis</strong></a></li>
+</ul></li>
+<li><a href="#k-way-anova"><strong>k-way ANOVA</strong></a><ul>
+<li><a href="#interaction"><strong>Interaction</strong></a></li>
+<li><a href="#anova-for-block-designs"><strong>ANOVA for Block Designs</strong></a></li>
+<li><a href="#anova-for-split-plot-designs"><strong>ANOVA for Split-Plot Designs</strong></a></li>
+</ul></li>
+<li><a href="#anova-for-repeated-measures"><strong>ANOVA for Repeated Measures</strong></a></li>
+<li><a href="#other-forms-of-linear-modelling"><strong>Other Forms of Linear Modelling</strong></a><ul>
+<li><a href="#ancova"><strong>ANCOVA</strong></a></li>
+<li><a href="#linear-regression"><strong>Linear Regression</strong></a></li>
+</ul></li>
+<li><a href="#checking-assumptions"><strong>Checking Assumptions</strong></a></li>
+<li><a href="#power-analysis-for-liner-models"><strong>Power Analysis for Liner Models</strong></a></li>
+<li><a href="#conclusions"><strong>Conclusions</strong></a></li>
+<li><a href="#references"><strong>References</strong></a></li>
+<li><a href="#homework"><strong>Homework</strong></a></li>
 </ul>
-<hr />
 </div>
+
+<hr />
 <div id="introduction" class="section level2">
 <h2><strong>Introduction</strong></h2>
 <p>In the previous lecture we started talking about inferential statistics and t-test, which we can use to compare two samples. However, in the majority of cases we work with more complex designs where we need to compare different treatments, so we need more advanced tests, which will be describe here.</p>
@@ -248,8 +263,8 @@ $(document).ready(function () {
 </ul>
 <p>Some of these assumptions are quite strict, while other can be relaxed, particularly if we have at least 10 samples per group.</p>
 <p>ANOVA, or analysis of variance, is a test that compares mean values from several groups based on the following equation:</p>
-<div id="y_j-eta-tau_i-epsilon" class="section level3">
-<h3><span class="math inline">\(y_j = \eta + \tau_i + \epsilon\)</span></h3>
+<div id="y_j-eta-tau_i-epsilon" class="section level4">
+<h4><span class="math inline">\(y_j = \eta + \tau_i + \epsilon\)</span></h4>
 <p>where <span class="math inline">\(y_j\)</span> is the effect of treatment <span class="math inline">\(\tau_i\)</span> on group <span class="math inline">\(j\)</span>, <span class="math inline">\(\eta\)</span> is the grand mean, i.e. the global mean of all groups, and <span class="math inline">\(\epsilon\)</span> is the error term.</p>
 <p>Most of the assumptions are related to the error term <span class="math inline">\(\epsilon\)</span>, which is assumed to be independent, normally distributed and have constant variance. The assumption of independence is very strict, if our data are correlated this assumption will be violated and the results of ANOVA could be biased. However, if the experiment is properly designed and fully randomized this will not be an issue (except for within-subject designs like latin square). Normality and constant variance are assumptions that can be relaxed if sample size is sufficiently large. We will look at how to check both of them below.</p>
 <hr />
@@ -389,22 +404,22 @@ SIM.LargeEffect[SIM.LargeEffect$Treatment==&quot;T3&quot;,]$Yield = S3</code></p
 <p>Here we are first subsetting the object by treatment, and at the same time replacing the elements in the column <code>yield</code> (for only the treatment we have subset) with one of the samples we created above.</p>
 <p>Let’s see how the object <code>SIM.LargeEffect</code> looks now:</p>
 <pre class="r"><code>SIM.LargeEffect</code></pre>
-<pre><code>##   Rep Treatment    Yield
-## 1   1        T1 4.281881
-## 2   2        T1 5.785743
-## 3   3        T1 7.302455
-## 4   1        T2 9.521592
-## 5   2        T2 8.913204
-## 6   3        T2 3.147275
-## 7   1        T3 6.160281
-## 8   2        T3 9.190901
-## 9   3        T3 6.265130</code></pre>
+<pre><code>##   Rep Treatment     Yield
+## 1   1        T1  6.509384
+## 2   2        T1  3.382190
+## 3   3        T1  5.309031
+## 4   1        T2  8.889303
+## 5   2        T2  5.547320
+## 6   3        T2 11.639874
+## 7   1        T3  6.728253
+## 8   2        T3  8.084810
+## 9   3        T3  6.415230</code></pre>
 <p>Now that we have a dataset where we know the effect size to be exactly 0.5, we can test it using ANOVA:</p>
 <pre class="r"><code>ANOVA.LargeEffect = aov(Yield ~ Treatment, data=SIM.LargeEffect)
 summary(ANOVA.LargeEffect)</code></pre>
 <pre><code>##             Df Sum Sq Mean Sq F value Pr(&gt;F)
-## Treatment    2   3.97   1.987   0.338  0.726
-## Residuals    6  35.23   5.872</code></pre>
+## Treatment    2  19.79   9.896   2.359  0.175
+## Residuals    6  25.17   4.195</code></pre>
 <p>Clearly, since this is a simulation it may be that we obtain a significant <em>p-value</em> some times. However, chances are the large majority of times the <em>p-value</em> will not be significant, despite the relatively large differences between samples. This is because the samples size is small (<span class="math inline">\(n=3\)</span>).</p>
 <p>On the contrary, if the sample size is large enough we can obtain very small <em>p-values</em> even in cases where differences between groups are extremely small. Let’s look at the following simulation:</p>
 <pre class="r"><code>S4 = rnorm(n=7000, mean=5, sd=2)
@@ -421,8 +436,8 @@ SIM.SmallEffect[SIM.SmallEffect$Treatment==&quot;T3&quot;,]$Yield = S6
 ANOVA.SmallEffect = aov(Yield ~ Treatment, data=SIM.SmallEffect)
 summary(ANOVA.SmallEffect)</code></pre>
 <pre><code>##                Df Sum Sq Mean Sq F value Pr(&gt;F)    
-## Treatment       2    348  174.14   43.02 &lt;2e-16 ***
-## Residuals   62997 255022    4.05                   
+## Treatment       2    594  297.08   73.77 &lt;2e-16 ***
+## Residuals   62997 253695    4.03                   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Here we have three samples of size <span class="math inline">\(n = 7000\)</span> each, and with this amount of data finding very high significance for extremely small differences between groups is possible. This is clearly an unrealistic example; however, it clearly shows that <em>p-value</em> and differences between groups are not correlated. The conclusion is that it is always advisable to not just report the <em>p-value</em> but also the effect size (or at least a plot that clearly shows differences between groups).</p>
@@ -449,15 +464,15 @@ denominator = sqrt((((length(S5)-1)*sd(S5)^2)+((length(S4)-1)*sd(S4)^2))/(length
 
 ES = numerator/denominator
 ES</code></pre>
-<pre><code>## [1] 0.06515309</code></pre>
+<pre><code>## [1] 0.04907851</code></pre>
 <p>Now that we have the effect size we can input it in <code>pwr.anova.test</code> to compute the number of samples (remember that <span class="math inline">\(f = \frac{ES}{2}\)</span>):</p>
 <pre class="r"><code>pwr.anova.test(k=3, f=ES/2, sig.level=0.05, power=0.8) </code></pre>
 <pre><code>## 
 ##      Balanced one-way analysis of variance power calculation 
 ## 
 ##               k = 3
-##               n = 3027.26
-##               f = 0.03257654
+##               n = 5334.271
+##               f = 0.02453925
 ##       sig.level = 0.05
 ##           power = 0.8
 ## 
@@ -592,15 +607,15 @@ summary(Two.Way.Interaction)</code></pre>
 <p>A lot of statistical tests in R are based on formula, like the one we used above. So it is important to take a moment and make sure we know how to code the formula exactly for the model we want to test.</p>
 <p>As you probably know by now, the syntax for the classic linear model is the following:</p>
 </div>
-</div>
-<div id="y-beta_0-beta_1-x-epsilon" class="section level3">
-<h3><span class="math inline">\(y = \beta_0 + \beta_1 x + \epsilon\)</span></h3>
+<div id="y-beta_0-beta_1-x-epsilon" class="section level4">
+<h4><span class="math inline">\(y = \beta_0 + \beta_1 x + \epsilon\)</span></h4>
 <p>The R syntax is simply: <code>y ~ x</code>.</p>
 <p>To add elements we would simple include a <code>+</code>: <code>y ~ x1 + x2</code>. This will test the main effects for <code>x1</code> and <code>x2</code>. In some cases we are interested in testing the interaction, and the model can thus be written as: <code>y ~ x1 * x2</code>. This will test both the main effects and their interaction. If we are only interested in testing the interaction the formula will become: <code>y ~ x1 : x2</code></p>
 <p>With more complex models we may be interested in including a lot more terms in the equations, but only testing two-way interactions. This can be coded like so:</p>
 <pre><code>y ~ (x1 + x2 + x3)^2</code></pre>
 <p>This formula will guarantee that we do <strong>not</strong> test for the interaction <code>x1*x2*x3</code>, but only for interactions including two predictors.</p>
 <p>More details about formula in R: <a href="http://faculty.chicagobooth.edu/richard.hahn/teaching/formulanotation.pdf">Statistical Formula Notation in R, by chicagobooth.edu</a> <a href="https://science.nature.nps.gov/im/datamgmt/statistics/r/formulas/">Statistical Formulas, by nature.nps.gov</a></p>
+</div>
 </div>
 <div id="anova-for-block-designs" class="section level3">
 <h3><strong>ANOVA for Block Designs</strong></h3>

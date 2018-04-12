@@ -217,14 +217,23 @@ $(document).ready(function () {
 
 </div>
 
-
-<div id="summary" class="section level2">
-<h2><strong>Summary</strong></h2>
+<div id="TOC">
 <ul>
-<li>Dealing with Spatial and Temporal Pseudoreplication</li>
-<li>Power analysis for LME</li>
+<li><a href="#loading-packages"><strong>Loading Packages</strong></a></li>
+<li><a href="#violating-the-spatial-independence-assumption"><strong>Violating the Spatial Independence Assumption</strong></a><ul>
+<li><a href="#seeding-hrp-experiment"><strong>Seeding HRP Experiment</strong></a></li>
+<li><a href="#post-hoc-power-analysis"><strong><em>Post Hoc</em> Power Analysis</strong></a></li>
+<li><a href="#including-variogram"><strong>Including Variogram</strong></a></li>
+</ul></li>
+<li><a href="#a-priori-power-analysis-for-mixed-effect-models"><strong><em>A Priori</em> Power Analysis for Mixed Effect Models</strong></a><ul>
+<li><a href="#create-a-dummy-dataset"><strong>Create a Dummy Dataset</strong></a></li>
+<li><a href="#create-the-variancecovariance-matrix"><strong>Create the Variance/Covariance Matrix</strong></a></li>
+<li><a href="#fill-the-dummy-dataset"><strong>Fill the Dummy Dataset</strong></a></li>
+<li><a href="#fitting-a-model"><strong>Fitting a Model</strong></a></li>
+</ul></li>
 </ul>
 </div>
+
 <div id="loading-packages" class="section level2">
 <h2><strong>Loading Packages</strong></h2>
 <pre class="r"><code>library(tidyverse)
@@ -443,14 +452,14 @@ summary(full.lme)</code></pre>
 <p>To compute the power of this model we can use the function <code>powerSim</code> in the package <code>simr</code>. Since it is based on a simulation it takes a while to compute the results, and the more complex is the model to slowest the computation will become:</p>
 <pre class="r"><code>powerSim(full.lme, fixed(&quot;Treatment&quot;, &quot;lr&quot;), nsim=50, progress=F)</code></pre>
 <pre><code>## Power for predictor &#39;Treatment&#39;, (95% confidence interval):
-##       100.0% (92.89, 100.0)
+##       98.00% (89.35, 99.95)
 ## 
 ## Test: Likelihood ratio
 ## 
-## Based on 50 simulations, (23 warnings, 0 errors)
+## Based on 50 simulations, (22 warnings, 0 errors)
 ## alpha = 0.05, nrow = 480
 ## 
-## Time elapsed: 0 h 0 m 50 s
+## Time elapsed: 0 h 0 m 53 s
 ## 
 ## nb: result might be an observed power calculation</code></pre>
 <p>Clearly this model has full power to detect the effect of treatment. We can compute power to detect specific contrasts using the following line:</p>
@@ -461,23 +470,23 @@ summary(full.lme)</code></pre>
 ## Test: z-test
 ##       Effect size for TreatmentT2 is -3.6
 ## 
-## Based on 50 simulations, (16 warnings, 0 errors)
+## Based on 50 simulations, (20 warnings, 0 errors)
 ## alpha = 0.05, nrow = 480
 ## 
-## Time elapsed: 0 h 0 m 16 s
+## Time elapsed: 0 h 0 m 18 s
 ## 
 ## nb: result might be an observed power calculation</code></pre>
 <p>Again, clearly this model is more powerful than what we fitted before. Now we have enough power to detect differences between <code>T1</code> and <code>T2</code>. To check the power for drilling date we can use the following line:</p>
 <pre class="r"><code>powerSim(full.lme, fixed(&quot;DrillingDate&quot;), nsim=50, progress=F)</code></pre>
 <pre><code>## Power for predictor &#39;DrillingDate&#39;, (95% confidence interval):
-##       40.00% (26.41, 54.82)
+##       50.00% (35.53, 64.47)
 ## 
 ## Test: Likelihood ratio
 ## 
 ## Based on 50 simulations, (20 warnings, 0 errors)
 ## alpha = 0.05, nrow = 480
 ## 
-## Time elapsed: 0 h 0 m 51 s
+## Time elapsed: 0 h 0 m 52 s
 ## 
 ## nb: result might be an observed power calculation</code></pre>
 <p>As you can see the power to detect drilling date is very low, so we cannot really accept the significant value we obtained above. This model is still not powerful enough to detect such small differences.</p>
@@ -587,9 +596,9 @@ Sigma</code></pre>
 
 Tr1</code></pre>
 <pre><code>##          [,1]     [,2]     [,3]     [,4]     [,5]
-## [1,] 22.16325 22.19535 23.72965 24.26077 23.85018
-## [2,] 19.47016 21.00083 23.33439 23.64744 24.65361
-## [3,] 21.84774 21.11549 22.16350 24.48470 23.99344</code></pre>
+## [1,] 19.15339 20.80251 22.27746 24.09982 23.81991
+## [2,] 19.52583 19.89275 20.90199 23.01590 23.07812
+## [3,] 19.94074 21.56072 22.69816 23.11278 23.95001</code></pre>
 <p>Each column has n=3 values (since 3 are the number of replicates in the field or the number of subjects), taken from normal distribution with known means and standard deviation of 1.</p>
 <p>To create the values for the other treatments we need to remember</p>
 <pre class="r"><code>Tr2 = rmvnorm(n = 3, 
@@ -632,12 +641,12 @@ Design[Design$Treatment==&quot;Tr4&quot;,&quot;Response&quot;] = c(Tr4[,1], Tr4[
 <p>Let’s look at the object <code>Design</code> now:</p>
 <pre class="r"><code>head(Design)</code></pre>
 <pre><code>##   Replicate Week Treatment Response
-## 1         1    1       Tr1 22.16325
-## 2         2    1       Tr1 19.47016
-## 3         3    1       Tr1 21.84774
-## 4         1    2       Tr1 22.19535
-## 5         2    2       Tr1 21.00083
-## 6         3    2       Tr1 21.11549</code></pre>
+## 1         1    1       Tr1 19.15339
+## 2         2    1       Tr1 19.52583
+## 3         3    1       Tr1 19.94074
+## 4         1    2       Tr1 20.80251
+## 5         2    2       Tr1 19.89275
+## 6         3    2       Tr1 21.56072</code></pre>
 </div>
 <div id="fitting-a-model" class="section level3">
 <h3><strong>Fitting a Model</strong></h3>
@@ -652,32 +661,32 @@ summary(sim.model)</code></pre>
 ## Formula: Response ~ Treatment + (1 | Week)
 ##    Data: Design
 ## 
-## REML criterion at convergence: 161.9
+## REML criterion at convergence: 167.4
 ## 
 ## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -1.9170 -0.6653 -0.1380  0.7889  2.3875 
+##      Min       1Q   Median       3Q      Max 
+## -1.98438 -0.85949 -0.02507  0.59867  2.23635 
 ## 
 ## Random effects:
 ##  Groups   Name        Variance Std.Dev.
-##  Week     (Intercept) 2.1342   1.461   
-##  Residual             0.6691   0.818   
+##  Week     (Intercept) 2.5776   1.6055  
+##  Residual             0.7321   0.8556  
 ## Number of obs: 60, groups:  Week, 5
 ## 
 ## Fixed effects:
 ##              Estimate Std. Error      df t value Pr(&gt;|t|)    
-## (Intercept)   22.7940     0.6866  4.6323  33.197 1.09e-06 ***
-## TreatmentTr2  -0.4281     0.2987 52.0000  -1.433    0.158    
-## TreatmentTr3  -0.2404     0.2987 52.0000  -0.805    0.425    
-## TreatmentTr4   1.4255     0.2987 52.0000   4.773 1.52e-05 ***
+## (Intercept)   21.8553     0.7512  4.5725  29.093 2.29e-06 ***
+## TreatmentTr2   0.7817     0.3124 52.0000   2.502   0.0155 *  
+## TreatmentTr3   1.5404     0.3124 52.0000   4.930 8.78e-06 ***
+## TreatmentTr4   1.8964     0.3124 52.0000   6.070 1.49e-07 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Correlation of Fixed Effects:
 ##             (Intr) TrtmT2 TrtmT3
-## TreatmntTr2 -0.217              
-## TreatmntTr3 -0.217  0.500       
-## TreatmntTr4 -0.217  0.500  0.500</code></pre>
+## TreatmntTr2 -0.208              
+## TreatmntTr3 -0.208  0.500       
+## TreatmntTr4 -0.208  0.500  0.500</code></pre>
 <p>Now we can check the power of this model as we did before (nsim is used to reduce the computational time during testing, to get a more robust measure it is better not to include this option):</p>
 <pre class="r"><code>powerSim(sim.model, nsim=10, progress=F)</code></pre>
 <pre><code>## Power for predictor &#39;Treatment&#39;, (95% confidence interval):
@@ -694,10 +703,10 @@ summary(sim.model)</code></pre>
 <p>The power seems to be good, even though the lower bound of the simulation is only 69.15%. Again we can check the power to detect the specific effect size (d=0.5) including an option to test the differences between <code>Tr1</code> and <code>Tr2</code>:</p>
 <pre class="r"><code>powerSim(sim.model, fixed(&quot;TreatmentTr2&quot;, &quot;z&quot;), nsim=10, progress=F)</code></pre>
 <pre><code>## Power for predictor &#39;TreatmentTr2&#39;, (95% confidence interval):
-##       40.00% (12.16, 73.76)
+##       70.00% (34.75, 93.33)
 ## 
 ## Test: z-test
-##       Effect size for TreatmentTr2 is -0.43
+##       Effect size for TreatmentTr2 is 0.78
 ## 
 ## Based on 10 simulations, (0 warnings, 0 errors)
 ## alpha = 0.05, nrow = 60
