@@ -219,6 +219,7 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
+<li><a href="#video-lecture"><strong>Video Lecture</strong></a></li>
 <li><a href="#introduction"><strong>Introduction</strong></a></li>
 <li><a href="#assumptions-of-parametric-tests"><strong>Assumptions of parametric tests</strong></a></li>
 <li><a href="#anova"><strong>ANOVA</strong></a><ul>
@@ -244,7 +245,13 @@ $(document).ready(function () {
 </ul>
 </div>
 
+<div id="video-lecture" class="section level2">
+<h2><strong>Video Lecture</strong></h2>
+<p>This video covers both Lecture 3 and Lecture 4</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ItYVLSoTLU8" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+</iframe>
 <hr />
+</div>
 <div id="introduction" class="section level2">
 <h2><strong>Introduction</strong></h2>
 <p>In the previous lecture we started talking about inferential statistics and t-test, which we can use to compare two samples. However, in the majority of cases we work with more complex designs where we need to compare different treatments, so we need more advanced tests, which will be describe here.</p>
@@ -404,22 +411,22 @@ SIM.LargeEffect[SIM.LargeEffect$Treatment==&quot;T3&quot;,]$Yield = S3</code></p
 <p>Here we are first subsetting the object by treatment, and at the same time replacing the elements in the column <code>yield</code> (for only the treatment we have subset) with one of the samples we created above.</p>
 <p>Let’s see how the object <code>SIM.LargeEffect</code> looks now:</p>
 <pre class="r"><code>SIM.LargeEffect</code></pre>
-<pre><code>##   Rep Treatment     Yield
-## 1   1        T1  6.509384
-## 2   2        T1  3.382190
-## 3   3        T1  5.309031
-## 4   1        T2  8.889303
-## 5   2        T2  5.547320
-## 6   3        T2 11.639874
-## 7   1        T3  6.728253
-## 8   2        T3  8.084810
-## 9   3        T3  6.415230</code></pre>
+<pre><code>##   Rep Treatment    Yield
+## 1   1        T1 5.014994
+## 2   2        T1 3.565033
+## 3   3        T1 4.653647
+## 4   1        T2 8.937663
+## 5   2        T2 6.626896
+## 6   3        T2 2.211289
+## 7   1        T3 8.794522
+## 8   2        T3 5.300685
+## 9   3        T3 9.202362</code></pre>
 <p>Now that we have a dataset where we know the effect size to be exactly 0.5, we can test it using ANOVA:</p>
 <pre class="r"><code>ANOVA.LargeEffect = aov(Yield ~ Treatment, data=SIM.LargeEffect)
 summary(ANOVA.LargeEffect)</code></pre>
 <pre><code>##             Df Sum Sq Mean Sq F value Pr(&gt;F)
-## Treatment    2  19.79   9.896   2.359  0.175
-## Residuals    6  25.17   4.195</code></pre>
+## Treatment    2  16.93   8.467   1.508  0.295
+## Residuals    6  33.70   5.616</code></pre>
 <p>Clearly, since this is a simulation it may be that we obtain a significant <em>p-value</em> some times. However, chances are the large majority of times the <em>p-value</em> will not be significant, despite the relatively large differences between samples. This is because the samples size is small (<span class="math inline">\(n=3\)</span>).</p>
 <p>On the contrary, if the sample size is large enough we can obtain very small <em>p-values</em> even in cases where differences between groups are extremely small. Let’s look at the following simulation:</p>
 <pre class="r"><code>S4 = rnorm(n=7000, mean=5, sd=2)
@@ -436,8 +443,8 @@ SIM.SmallEffect[SIM.SmallEffect$Treatment==&quot;T3&quot;,]$Yield = S6
 ANOVA.SmallEffect = aov(Yield ~ Treatment, data=SIM.SmallEffect)
 summary(ANOVA.SmallEffect)</code></pre>
 <pre><code>##                Df Sum Sq Mean Sq F value Pr(&gt;F)    
-## Treatment       2    594  297.08   73.77 &lt;2e-16 ***
-## Residuals   62997 253695    4.03                   
+## Treatment       2    286   143.1   36.65 &lt;2e-16 ***
+## Residuals   62997 245910     3.9                   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Here we have three samples of size <span class="math inline">\(n = 7000\)</span> each, and with this amount of data finding very high significance for extremely small differences between groups is possible. This is clearly an unrealistic example; however, it clearly shows that <em>p-value</em> and differences between groups are not correlated. The conclusion is that it is always advisable to not just report the <em>p-value</em> but also the effect size (or at least a plot that clearly shows differences between groups).</p>
@@ -464,15 +471,15 @@ denominator = sqrt((((length(S5)-1)*sd(S5)^2)+((length(S4)-1)*sd(S4)^2))/(length
 
 ES = numerator/denominator
 ES</code></pre>
-<pre><code>## [1] 0.04907851</code></pre>
+<pre><code>## [1] 0.006738962</code></pre>
 <p>Now that we have the effect size we can input it in <code>pwr.anova.test</code> to compute the number of samples (remember that <span class="math inline">\(f = \frac{ES}{2}\)</span>):</p>
 <pre class="r"><code>pwr.anova.test(k=3, f=ES/2, sig.level=0.05, power=0.8) </code></pre>
 <pre><code>## 
 ##      Balanced one-way analysis of variance power calculation 
 ## 
 ##               k = 3
-##               n = 5334.271
-##               f = 0.02453925
+##               n = 282872.5
+##               f = 0.003369481
 ##       sig.level = 0.05
 ##           power = 0.8
 ## 
@@ -876,14 +883,13 @@ summary(LinReg)</code></pre>
 <h2><strong>Power Analysis for Liner Models</strong></h2>
 <p>The package <code>pwr</code> provides a function to compute power and sample size requirements for linear models (ANCOVA and linear regression). The syntax is a bit more complex that what we used before for ANOVA and require a different measure of the effect size. For this reason, first of all we are going to look at another function in the package <code>sjstats</code> to obtain an ANOVA table with effect size for any linear model:</p>
 <pre class="r"><code>anova_stats(ancova.mod)</code></pre>
-<pre><code>## # A tibble: 3 x 12
+<pre><code>## # A tibble: 3 x 11
 ##   term         df   sumsq  meansq statistic p.value   etasq partial.etasq
 ##   &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;
 ## 1 nf           5.  23987.   4797.      18.5      0.  0.0180        0.0260
 ## 2 bv           1. 437177. 437177.    1682.       0.  0.323         0.329 
 ## 3 Residuals 3436. 892933.    260.      NA       NA  NA            NA     
-## # ... with 4 more variables: omegasq &lt;dbl&gt;, partial.omegasq &lt;dbl&gt;,
-## #   cohens.f &lt;dbl&gt;, power &lt;dbl&gt;</code></pre>
+## # ... with 3 more variables: omegasq &lt;dbl&gt;, cohens.f &lt;dbl&gt;, power &lt;dbl&gt;</code></pre>
 <p>For the function <code>pwr.f2.test</code> we need to use <span class="math inline">\(f^2\)</span> as effect size, which can be computed from the partial EtaSquare, which is another effect size index specific to ANOVA:</p>
 <div id="f-fracmu2_p1-mu2_p" class="section level4">
 <h4><span class="math inline">\(f = \frac{\mu^2_p}{(1-\mu^2_p)}\)</span></h4>
