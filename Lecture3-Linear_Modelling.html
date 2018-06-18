@@ -235,6 +235,7 @@ $(document).ready(function () {
 <li><a href="#anova-for-repeated-measures"><strong>ANOVA for Repeated Measures</strong></a></li>
 <li><a href="#other-forms-of-linear-modelling"><strong>Other Forms of Linear Modelling</strong></a><ul>
 <li><a href="#ancova"><strong>ANCOVA</strong></a></li>
+<li><a href="#anova-for-latin-square-design"><strong>ANOVA for Latin-Square Design</strong></a></li>
 <li><a href="#linear-regression"><strong>Linear Regression</strong></a></li>
 </ul></li>
 <li><a href="#checking-assumptions"><strong>Checking Assumptions</strong></a></li>
@@ -273,7 +274,7 @@ $(document).ready(function () {
 <div id="y_j-eta-tau_i-epsilon" class="section level4">
 <h4><span class="math inline">\(y_j = \eta + \tau_i + \epsilon\)</span></h4>
 <p>where <span class="math inline">\(y_j\)</span> is the effect of treatment <span class="math inline">\(\tau_i\)</span> on group <span class="math inline">\(j\)</span>, <span class="math inline">\(\eta\)</span> is the grand mean, i.e. the global mean of all groups, and <span class="math inline">\(\epsilon\)</span> is the error term.</p>
-<p>Most of the assumptions are related to the error term <span class="math inline">\(\epsilon\)</span>, which is assumed to be independent, normally distributed and have constant variance. The assumption of independence is very strict, if our data are correlated this assumption will be violated and the results of ANOVA could be biased. However, if the experiment is properly designed and fully randomized this will not be an issue (except for within-subject designs like latin square). Normality and constant variance are assumptions that can be relaxed if sample size is sufficiently large. We will look at how to check both of them below.</p>
+<p>Most of the assumptions are related to the error term <span class="math inline">\(\epsilon\)</span>, which is assumed to be independent, normally distributed and have constant variance. The assumption of independence is very strict, if our data are correlated this assumption will be violated and the results of ANOVA could be biased. However, if the experiment is properly designed and fully randomized this will not be an issue. Normality and constant variance are assumptions that can be relaxed if sample size is sufficiently large. We will look at how to check both of them below.</p>
 <hr />
 </div>
 </div>
@@ -411,22 +412,22 @@ SIM.LargeEffect[SIM.LargeEffect$Treatment==&quot;T3&quot;,]$Yield = S3</code></p
 <p>Here we are first subsetting the object by treatment, and at the same time replacing the elements in the column <code>yield</code> (for only the treatment we have subset) with one of the samples we created above.</p>
 <p>Let’s see how the object <code>SIM.LargeEffect</code> looks now:</p>
 <pre class="r"><code>SIM.LargeEffect</code></pre>
-<pre><code>##   Rep Treatment    Yield
-## 1   1        T1 5.014994
-## 2   2        T1 3.565033
-## 3   3        T1 4.653647
-## 4   1        T2 8.937663
-## 5   2        T2 6.626896
-## 6   3        T2 2.211289
-## 7   1        T3 8.794522
-## 8   2        T3 5.300685
-## 9   3        T3 9.202362</code></pre>
+<pre><code>##   Rep Treatment     Yield
+## 1   1        T1  5.528217
+## 2   2        T1  3.013302
+## 3   3        T1  6.445517
+## 4   1        T2  4.440771
+## 5   2        T2  3.973044
+## 6   3        T2  8.297347
+## 7   1        T3 10.650348
+## 8   2        T3  7.888614
+## 9   3        T3  4.894435</code></pre>
 <p>Now that we have a dataset where we know the effect size to be exactly 0.5, we can test it using ANOVA:</p>
 <pre class="r"><code>ANOVA.LargeEffect = aov(Yield ~ Treatment, data=SIM.LargeEffect)
 summary(ANOVA.LargeEffect)</code></pre>
 <pre><code>##             Df Sum Sq Mean Sq F value Pr(&gt;F)
-## Treatment    2  16.93   8.467   1.508  0.295
-## Residuals    6  33.70   5.616</code></pre>
+## Treatment    2  13.28   6.639   1.166  0.373
+## Residuals    6  34.15   5.692</code></pre>
 <p>Clearly, since this is a simulation it may be that we obtain a significant <em>p-value</em> some times. However, chances are the large majority of times the <em>p-value</em> will not be significant, despite the relatively large differences between samples. This is because the samples size is small (<span class="math inline">\(n=3\)</span>).</p>
 <p>On the contrary, if the sample size is large enough we can obtain very small <em>p-values</em> even in cases where differences between groups are extremely small. Let’s look at the following simulation:</p>
 <pre class="r"><code>S4 = rnorm(n=7000, mean=5, sd=2)
@@ -443,8 +444,8 @@ SIM.SmallEffect[SIM.SmallEffect$Treatment==&quot;T3&quot;,]$Yield = S6
 ANOVA.SmallEffect = aov(Yield ~ Treatment, data=SIM.SmallEffect)
 summary(ANOVA.SmallEffect)</code></pre>
 <pre><code>##                Df Sum Sq Mean Sq F value Pr(&gt;F)    
-## Treatment       2    286   143.1   36.65 &lt;2e-16 ***
-## Residuals   62997 245910     3.9                   
+## Treatment       2    334  166.88   41.53 &lt;2e-16 ***
+## Residuals   62997 253136    4.02                   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Here we have three samples of size <span class="math inline">\(n = 7000\)</span> each, and with this amount of data finding very high significance for extremely small differences between groups is possible. This is clearly an unrealistic example; however, it clearly shows that <em>p-value</em> and differences between groups are not correlated. The conclusion is that it is always advisable to not just report the <em>p-value</em> but also the effect size (or at least a plot that clearly shows differences between groups).</p>
@@ -471,15 +472,15 @@ denominator = sqrt((((length(S5)-1)*sd(S5)^2)+((length(S4)-1)*sd(S4)^2))/(length
 
 ES = numerator/denominator
 ES</code></pre>
-<pre><code>## [1] 0.006738962</code></pre>
+<pre><code>## [1] 0.04544516</code></pre>
 <p>Now that we have the effect size we can input it in <code>pwr.anova.test</code> to compute the number of samples (remember that <span class="math inline">\(f = \frac{ES}{2}\)</span>):</p>
 <pre class="r"><code>pwr.anova.test(k=3, f=ES/2, sig.level=0.05, power=0.8) </code></pre>
 <pre><code>## 
 ##      Balanced one-way analysis of variance power calculation 
 ## 
 ##               k = 3
-##               n = 282872.5
-##               f = 0.003369481
+##               n = 6221.152
+##               f = 0.02272258
 ##       sig.level = 0.05
 ##           power = 0.8
 ## 
@@ -817,7 +818,7 @@ summary(ancova.mod)</code></pre>
 ##  N5 - N4  0.6566338 0.9520374 3436   0.690  0.9831
 ## 
 ## P value adjustment: tukey method for comparing a family of 6 estimates</code></pre>
-<p>This creates an dditional output with all <em>p-values</em> adjusted using the Tukey correction. The option adjust may take a series of values depending on the corrections we need to include. Another popular choise is Bonferroni (<code>adjust=&quot;bonferroni&quot;</code>). Please look at this <a href="https://www.rdocumentation.org/packages/lsmeans/versions/2.27-60/topics/summary">page</a> for all the possible choices.</p>
+<p>This creates an additional output with all <em>p-values</em> adjusted using the Tukey correction. The option adjust may take a series of values depending on the corrections we need to include. Another popular choice is Bonferroni (<code>adjust=&quot;bonferroni&quot;</code>). Please look at this <a href="https://www.rdocumentation.org/packages/lsmeans/versions/2.27-60/topics/summary">page</a> for all the possible choices.</p>
 <p>We can compare these values with what the one-way ANOVA estimated:</p>
 <pre class="r"><code>model.tables(One.Way, type=&quot;means&quot;)</code></pre>
 <pre><code>## Tables of means
@@ -834,6 +835,54 @@ summary(ancova.mod)</code></pre>
 <pre class="r"><code>lsmeans(ancova.mod, specs=c(&quot;nf&quot;), adjust=&quot;tukey&quot;, contr=&quot;cld&quot;) %&gt;%
   plot</code></pre>
 <p><img src="Lecture3-Linear_Modelling_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+</div>
+<div id="anova-for-latin-square-design" class="section level3">
+<h3><strong>ANOVA for Latin-Square Design</strong></h3>
+<p>As we mentioned in the previous lecture, latin-square is a design very popular in animal studies and it needs to be treated carefully during analysis (<a href="http://www.stat.wisc.edu/courses/st572-larget/Spring2007/handouts17-4.pdf">stat.wisc.edu</a>). Let’s say for example that we are testing three different diets in a 3x3 latin-square design. Each diet will be fed randomly to one out of three cows included in the experiment. The design will look like the image below:</p>
+<div class="figure">
+<img src="http://www.statisticshowto.com/wp-content/uploads/2017/05/latin-square.png" alt="3x3 Latin-Square Design" />
+<p class="caption">3x3 Latin-Square Design</p>
+</div>
+<p>The analysis needs to account for the way is cow was allocated in the experiment, in other words rows and columns of the square need to be included in the model. To show how to properly analyse data coming from a latin-square design we can use one of the datasets available within the package <code>agridat</code>:</p>
+<pre class="r"><code>data(bridges.cucumber)
+
+str(bridges.cucumber)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    32 obs. of  5 variables:
+##  $ loc  : Factor w/ 2 levels &quot;Clemson&quot;,&quot;Tifton&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ gen  : Factor w/ 4 levels &quot;Dasher&quot;,&quot;Guardian&quot;,..: 1 1 1 1 2 2 2 2 3 3 ...
+##  $ row  : int  1 2 3 4 1 2 3 4 1 2 ...
+##  $ col  : int  3 4 2 1 4 2 1 3 1 3 ...
+##  $ yield: num  44.2 54.1 47.2 36.7 33 13.6 44.1 35.8 11.5 22.4 ...</code></pre>
+<p>This dataset has <code>yield</code> as the dependent variable, and <code>gen</code> as the main treatment factor. However, since the design is a latin-square we also have the position where each treatment was applied in rows and columns. The correct way to analyse these data is the following:</p>
+<pre class="r"><code>LatinSquare = lm(yield ~ factor(row) + factor(col) + gen, data=bridges.cucumber)
+summary(LatinSquare)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = yield ~ factor(row) + factor(col) + gen, data = bridges.cucumber)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -15.7738  -4.9790  -0.5072   4.0969  14.8229 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   46.2680     5.2647   8.788  1.2e-08 ***
+## factor(row)2  -2.3344     4.7089  -0.496 0.624989    
+## factor(row)3   7.2512     4.7089   1.540 0.137846    
+## factor(row)4   6.2057     4.7089   1.318 0.201103    
+## factor(col)2  -5.3912     4.7089  -1.145 0.264555    
+## factor(col)3   2.1171     4.7089   0.450 0.657396    
+## factor(col)4  -0.8515     4.7089  -0.181 0.858166    
+## genGuardian  -12.8463     4.7089  -2.728 0.012278 *  
+## genPoinsett  -20.7974     4.7089  -4.417 0.000218 ***
+## genSprint    -15.4525     4.7089  -3.282 0.003408 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 9.418 on 22 degrees of freedom
+## Multiple R-squared:  0.5745, Adjusted R-squared:  0.4005 
+## F-statistic: 3.301 on 9 and 22 DF,  p-value: 0.01071</code></pre>
+<p>As you can see from the code, both row and col need to be included in the model as factors, so even if in the data these are provided as integers, we still need to transform them into factors. The interpretation is the same as for other models, we are only interested in looking for significance in the treatment factor, which in this case is <code>gen</code>.</p>
 </div>
 <div id="linear-regression" class="section level3">
 <h3><strong>Linear Regression</strong></h3>
@@ -869,7 +918,7 @@ summary(LinReg)</code></pre>
 <p>We can check that our model complies with these assumptions using the function <code>plot</code>:</p>
 <pre class="r"><code> par(mfrow=c(1,2))  
  plot(LinReg, which=c(1,2))</code></pre>
-<p><img src="Lecture3-Linear_Modelling_files/figure-html/unnamed-chunk-42-1.png" width="960" /></p>
+<p><img src="Lecture3-Linear_Modelling_files/figure-html/unnamed-chunk-44-1.png" width="960" /></p>
 <p>The first plot on the left represents the residuals against the fitted values (or the estimates from the model). One of our assumptions is that the error term had mean of zero and constant variance. This means that we should see the residuals equally spread around zero, and a more or less horizontal line (red line) with intercept on the zero. In this case the line is very close to being straight across zero, and the spread is more or less constant throughout the range of fitted values. Therefore, we can conclude our model does <strong>not</strong> violate this assumption.</p>
 <p>The second plot is the QQplot of the residuals. This plots the quantiles of the distribution of residuals against quantiles of a standard normal distribution (with mean = 0 and sd = 1). The more our samples fit a normal distribution, the more these points should lie on a straight line with an inclination of 45 degrees. In this case it seems the quantile line is not exactly straight, so we need an additional test to determine whether we can accept normality. We can compute the skewness of the residuals, with the function from the package <code>moments</code>:</p>
 <pre class="r"><code>LinReg %&gt;%
